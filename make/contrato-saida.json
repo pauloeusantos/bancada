@@ -1,0 +1,20 @@
+{
+  "_comentario": "Contrato entre o Make e o site. O front-end só aceita estas chaves. Preço, prazo, risco e o veredito 'compensa consertar' são calculados no navegador a partir do catálogo da loja — a IA não participa disso.",
+  "chave": "oxidacao",
+  "confianca": 0.88,
+  "alternativa": "placa",
+  "urgencia": "alta",
+  "fatos_extraidos": [
+    "Houve contato com água de piscina",
+    "O aparelho foi ligado depois de molhar"
+  ],
+  "checagens": [
+    "Quanto tempo o aparelho ficou submerso?",
+    "O aquecimento se concentra em algum ponto?"
+  ],
+  "cuidados_agora": [
+    "Não tente ligar nem carregar.",
+    "Não use arroz nem secador."
+  ],
+  "resumo_para_tecnico": "Submersão em piscina, cliente energizou após o fato; verificar corrosão."
+}

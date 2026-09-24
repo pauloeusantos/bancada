@@ -1,0 +1,1083 @@
+<meta charset="utf-8">
+<title>Bancada</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ground:#EDEFF2; --surface:#FFFFFF; --surface-2:#F6F7F9; --surface-3:#E4E8ED;
+    --line:#D2D8DE; --line-strong:#B6BFC8;
+    --ink:#161B21; --ink-2:#566069; --ink-3:#7C868F;
+    --accent:#A0511E; --accent-ink:#FFFFFF; --accent-soft:#F3E5D9; --accent-line:#DCC3AE;
+    --ok:#1C6549; --ok-soft:#DDEFE7; --warn:#835400; --warn-soft:#F7EAD1; --crit:#9E2323; --crit-soft:#F7DFDE;
+    --r:10px; --r-lg:14px;
+    --shadow:0 1px 2px rgba(20,28,36,.05), 0 10px 26px -18px rgba(20,28,36,.45);
+    --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:"IBM Plex Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+    --display:"Archivo", "IBM Plex Sans", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --ground:#13171B; --surface:#1B2126; --surface-2:#222930; --surface-3:#2B333A;
+      --line:#313A42; --line-strong:#44505A;
+      --ink:#E7EBEF; --ink-2:#9BA6B0; --ink-3:#7D8892;
+      --accent:#E0864A; --accent-ink:#1B2126; --accent-soft:#38281C; --accent-line:#5A4331;
+      --ok:#57C094; --ok-soft:#17312A; --warn:#E0AA45; --warn-soft:#332815; --crit:#F0776E; --crit-soft:#3A1E1E;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --ground:#13171B; --surface:#1B2126; --surface-2:#222930; --surface-3:#2B333A;
+    --line:#313A42; --line-strong:#44505A;
+    --ink:#E7EBEF; --ink-2:#9BA6B0; --ink-3:#7D8892;
+    --accent:#E0864A; --accent-ink:#1B2126; --accent-soft:#38281C; --accent-line:#5A4331;
+    --ok:#57C094; --ok-soft:#17312A; --warn:#E0AA45; --warn-soft:#332815; --crit:#F0776E; --crit-soft:#3A1E1E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bd-wrap{max-width:760px; margin:0 auto; padding-inline:16px; padding-block:24px 56px}
+
+  /* ---------- cabeçalho ---------- */
+  .bd-top{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:18px}
+  .bd-mark{
+    width:42px; height:42px; flex:none; border-radius:9px; background:var(--accent);
+    display:grid; place-items:center; box-shadow:var(--shadow);
+  }
+  .bd-mark svg{display:block}
+  .bd-id h1{
+    font-family:var(--display); font-weight:700; font-size:26px; letter-spacing:-.02em;
+    margin:0; line-height:1.1;
+  }
+  .bd-id p{margin:2px 0 0; color:var(--ink-2); font-size:14px}
+  .bd-demo{
+    margin-left:auto; align-self:center; font-family:var(--mono); font-size:11px; font-weight:500;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--accent);
+    background:var(--accent-soft); border:1px solid var(--accent-line);
+    padding:5px 9px; border-radius:999px; white-space:nowrap;
+  }
+
+  /* ---------- abas ---------- */
+  .bd-tabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:22px; overflow-x:auto}
+  .bd-tabs button{
+    appearance:none; background:none; border:0; border-bottom:2px solid transparent;
+    font:inherit; font-size:14px; font-weight:500; color:var(--ink-2);
+    padding:10px 12px; cursor:pointer; white-space:nowrap; margin-bottom:-1px;
+  }
+  .bd-tabs button[aria-selected="true"]{color:var(--accent); border-bottom-color:var(--accent); font-weight:600}
+  .bd-tabs button:hover{color:var(--ink)}
+  :is(.bd-tabs button, .bd-btn, .bd-chip, .bd-mic, .bd-link, select, textarea, input):focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;
+  }
+  [role="tabpanel"]:focus{outline:none}
+
+  /* ---------- cartões ---------- */
+  .bd-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+    box-shadow:var(--shadow); padding:20px;
+  }
+  .bd-card + .bd-card{margin-top:16px}
+  .bd-card > h2{
+    font-family:var(--display); font-weight:600; font-size:17px; letter-spacing:-.01em;
+    margin:0 0 4px; text-wrap:balance;
+  }
+  .bd-card > h2 + p{margin:0 0 18px; color:var(--ink-2); font-size:14px; max-width:58ch}
+
+  /* ---------- formulário ---------- */
+  .bd-field{display:flex; flex-direction:column; gap:6px; margin-bottom:18px}
+  .bd-field > label, .bd-legend{font-size:13px; font-weight:600; letter-spacing:.01em}
+  .bd-hint{font-size:12.5px; color:var(--ink-3); margin:0}
+  .bd-row{display:flex; gap:12px; flex-wrap:wrap}
+  .bd-row > .bd-field{flex:1 1 200px; margin-bottom:18px}
+
+  input[type="text"], input[type="tel"], select, textarea{
+    font:inherit; font-size:15px; color:var(--ink); background:var(--surface-2);
+    border:1px solid var(--line-strong); border-radius:var(--r); padding:10px 12px; width:100%;
+  }
+  textarea{min-height:104px; resize:vertical; line-height:1.5}
+  input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="true"]{
+    border-color:var(--crit); background:var(--crit-soft);
+  }
+  fieldset{border:0; padding:0; margin:0 0 18px; min-width:0}
+  legend{padding:0; margin-bottom:8px}
+
+  .bd-chips{display:flex; gap:8px; flex-wrap:wrap}
+  .bd-chips input{position:absolute; width:1px; height:1px; opacity:0; pointer-events:none}
+  .bd-chip{
+    display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink-2);
+    border-radius:999px; padding:8px 14px; font-size:14px; font-weight:500;
+    transition:background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .bd-chips input:checked + .bd-chip{
+    background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600;
+  }
+  .bd-chips input:focus-visible + .bd-chip{outline:2px solid var(--accent); outline-offset:2px}
+
+  .bd-ta-wrap{position:relative}
+  .bd-mic{
+    position:absolute; right:8px; bottom:8px; width:36px; height:36px; border-radius:8px;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-2);
+    display:grid; place-items:center; cursor:pointer; padding:0;
+  }
+  .bd-mic[aria-pressed="true"]{background:var(--crit); border-color:var(--crit); color:#fff}
+  .bd-mic svg{display:block}
+
+  .bd-btn{
+    font:inherit; font-weight:600; font-size:15px; cursor:pointer;
+    background:var(--accent); color:var(--accent-ink); border:1px solid var(--accent);
+    border-radius:var(--r); padding:11px 20px;
+  }
+  .bd-btn[disabled]{opacity:.55; cursor:progress}
+  .bd-btn.ghost{background:transparent; color:var(--ink-2); border-color:var(--line-strong)}
+  .bd-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+
+  .bd-errors{
+    background:var(--crit-soft); border:1px solid var(--crit); border-radius:var(--r);
+    padding:12px 14px; margin-bottom:18px; font-size:14px;
+  }
+  .bd-errors h3{margin:0 0 6px; font-size:14px; font-weight:600; color:var(--crit)}
+  .bd-errors ul{margin:0; padding-left:18px}
+  .bd-errors a{color:var(--crit)}
+  .bd-note{
+    font-size:13px; color:var(--ink-2); background:var(--surface-2);
+    border:1px dashed var(--line-strong); border-radius:var(--r); padding:10px 12px; margin-top:12px;
+  }
+
+  /* ---------- ficha de bancada (resultado) ---------- */
+  .bd-ficha{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+    box-shadow:var(--shadow); overflow:hidden; margin-top:16px;
+  }
+  .bd-ficha-top{
+    background:var(--accent-soft); border-bottom:1px solid var(--accent-line);
+    padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .bd-proto{font-family:var(--mono); font-size:15px; font-weight:600; letter-spacing:.02em; color:var(--accent)}
+  .bd-proto small{display:block; font-family:var(--sans); font-size:11px; font-weight:500;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2)}
+
+  .bd-urg{
+    display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600;
+    padding:5px 11px; border-radius:999px; border:1px solid;
+  }
+  .bd-urg::before{content:""; width:8px; height:8px; border-radius:2px; background:currentColor; transform:rotate(45deg)}
+  .bd-urg.alta{color:var(--crit); background:var(--crit-soft); border-color:var(--crit)}
+  .bd-urg.media{color:var(--warn); background:var(--warn-soft); border-color:var(--warn)}
+  .bd-urg.baixa{color:var(--ok); background:var(--ok-soft); border-color:var(--ok)}
+
+  .bd-ficha-body{padding:20px}
+  .bd-diag-h{font-family:var(--display); font-weight:700; font-size:21px; letter-spacing:-.015em; margin:0 0 2px; text-wrap:balance}
+  .bd-conf{display:flex; align-items:center; gap:9px; margin:8px 0 18px; font-size:12.5px; color:var(--ink-2)}
+  .bd-bar{flex:1; max-width:160px; height:5px; border-radius:3px; background:var(--surface-3); overflow:hidden}
+  .bd-bar i{display:block; height:100%; background:var(--accent); border-radius:3px}
+  .bd-conf b{font-family:var(--mono); font-weight:600; color:var(--ink)}
+
+  .bd-grid{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+  .bd-grid .bd-cell:last-child:nth-child(odd){grid-column:1 / -1}
+  @media (min-width:560px){
+    .bd-grid{grid-template-columns:repeat(3, minmax(0, 1fr))}
+    .bd-grid .bd-cell:last-child:nth-child(odd){grid-column:auto}
+  }
+  .bd-cell{background:var(--surface-2); padding:12px 14px}
+  .bd-cell dt{font-size:11px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3); margin:0 0 3px}
+  .bd-cell dd{margin:0; font-family:var(--mono); font-size:16px; font-weight:600; font-variant-numeric:tabular-nums}
+  .bd-cell dd span{font-size:12px; font-weight:400; color:var(--ink-2); font-family:var(--sans)}
+
+  .bd-perf{
+    position:relative; height:1px; background:none; border-top:1.5px dashed var(--line-strong);
+    margin:22px -20px;
+  }
+  .bd-perf::before, .bd-perf::after{
+    content:""; position:absolute; top:-8px; width:15px; height:15px; border-radius:50%;
+    background:var(--ground); border:1px solid var(--line);
+  }
+  .bd-perf::before{left:-8px} .bd-perf::after{right:-8px}
+
+  .bd-block + .bd-block{margin-top:20px}
+  .bd-block h3{
+    font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--ink-3); margin:0 0 9px;
+  }
+  .bd-list{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px}
+  .bd-list li{display:flex; gap:10px; font-size:14.5px; line-height:1.5}
+  .bd-list li::before{
+    content:""; flex:none; width:6px; height:6px; margin-top:8px; border-radius:50%; background:var(--accent);
+  }
+  .bd-list.q li::before{background:var(--ink-3)}
+  .bd-list.f li::before{background:none; border:1.5px solid var(--accent)}
+  .bd-verdict{
+    display:flex; gap:11px; align-items:flex-start; font-size:14.5px;
+    border-radius:var(--r); padding:13px 15px; border:1px solid;
+  }
+  .bd-verdict.sim{background:var(--ok-soft); border-color:var(--ok)}
+  .bd-verdict.nao{background:var(--warn-soft); border-color:var(--warn)}
+  .bd-verdict b{display:block; font-size:13px; letter-spacing:.01em}
+  .bd-verdict.sim b{color:var(--ok)} .bd-verdict.nao b{color:var(--warn)}
+  .bd-verdict p{margin:2px 0 0; color:var(--ink)}
+
+  /* ---------- listas de protocolo ---------- */
+  .bd-empty{
+    text-align:center; padding:34px 16px; color:var(--ink-2); font-size:14.5px;
+    border:1px dashed var(--line-strong); border-radius:var(--r-lg); background:var(--surface-2);
+  }
+  .bd-tickets{display:flex; flex-direction:column; gap:12px; margin:0; padding:0; list-style:none}
+  .bd-ticket{
+    background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--line-strong);
+    border-radius:var(--r); padding:14px 16px; display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;
+  }
+  .bd-ticket.alta{border-left-color:var(--crit)}
+  .bd-ticket.media{border-left-color:var(--warn)}
+  .bd-ticket.baixa{border-left-color:var(--ok)}
+  .bd-ticket-main{flex:1 1 220px; min-width:0}
+  .bd-ticket-main .p{font-family:var(--mono); font-size:12.5px; color:var(--ink-3); letter-spacing:.02em}
+  .bd-ticket-main h4{margin:1px 0 3px; font-size:15.5px; font-weight:600; font-family:var(--display); letter-spacing:-.01em}
+  .bd-ticket-main .d{margin:0; font-size:13.5px; color:var(--ink-2); overflow-wrap:anywhere}
+  .bd-ticket-side{display:flex; flex-direction:column; gap:7px; align-items:flex-end}
+  .bd-ticket-side .v{font-family:var(--mono); font-size:13.5px; font-weight:600; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .bd-status{
+    font-size:12.5px; font-family:var(--sans); padding:5px 9px; border-radius:7px;
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); width:auto;
+  }
+  .bd-seed{
+    font-size:10.5px; font-family:var(--mono); letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-3); border:1px solid var(--line); border-radius:4px; padding:1px 5px;
+  }
+
+  .bd-counts{display:grid; grid-template-columns:repeat(auto-fit, minmax(110px,1fr)); gap:10px; margin-bottom:18px}
+  .bd-count{border:1px solid var(--line); border-radius:var(--r); padding:11px 13px; background:var(--surface-2)}
+  .bd-count dt{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3); margin:0}
+  .bd-count dd{margin:2px 0 0; font-family:var(--mono); font-size:22px; font-weight:600; font-variant-numeric:tabular-nums}
+  .bd-count.alta dd{color:var(--crit)} .bd-count.media dd{color:var(--warn)} .bd-count.baixa dd{color:var(--ok)}
+
+  .bd-filters{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px}
+  .bd-filters button{
+    font:inherit; font-size:13px; font-weight:500; cursor:pointer; padding:6px 12px; border-radius:999px;
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink-2);
+  }
+  .bd-filters button[aria-pressed="true"]{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+
+  .bd-foot{margin-top:26px; font-size:12.5px; color:var(--ink-3); text-align:center; line-height:1.6}
+  .bd-foot code{font-family:var(--mono); font-size:12px; background:var(--surface-2); border:1px solid var(--line); padding:1px 5px; border-radius:4px}
+
+  .bd-sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+  .bd-spin{display:inline-block; width:14px; height:14px; border:2px solid currentColor; border-top-color:transparent;
+    border-radius:50%; animation:bd-rot .7s linear infinite; vertical-align:-2px; margin-right:7px}
+  @keyframes bd-rot{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+  }
+</style>
+
+<div class="bd-wrap">
+
+  <header class="bd-top">
+    <span class="bd-mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.5 3.5a4.5 4.5 0 0 0-6 6l-5 5a2 2 0 0 0 2.8 2.8l5-5a4.5 4.5 0 0 0 6-6l-2.6 2.6-2.8-.4-.4-2.8z"/>
+        <path d="M17 17l3.5 3.5"/>
+      </svg>
+    </span>
+    <div class="bd-id">
+      <h1>Bancada</h1>
+      <p>Assistência técnica de celulares e notebooks &middot; Belo Horizonte</p>
+    </div>
+    <span class="bd-demo">Protótipo</span>
+  </header>
+
+  <div class="bd-tabs" role="tablist" aria-label="Seções da Bancada">
+    <button type="button" role="tab" id="tab-diag" aria-controls="panel-diag" aria-selected="true" tabindex="0">Diagnóstico</button>
+    <button type="button" role="tab" id="tab-meus" aria-controls="panel-meus" aria-selected="false" tabindex="-1">Meus protocolos</button>
+    <button type="button" role="tab" id="tab-int" aria-controls="panel-int" aria-selected="false" tabindex="-1">Bancada interna</button>
+  </div>
+
+  <!-- ===================== DIAGNÓSTICO ===================== -->
+  <section role="tabpanel" id="panel-diag" aria-labelledby="tab-diag" tabindex="0">
+    <div class="bd-card">
+      <h2>Descubra o que seu aparelho tem antes de sair de casa</h2>
+      <p>Conte o que aconteceu com suas palavras. Em alguns segundos você recebe a provável causa, a faixa de preço praticada aqui na loja, o prazo e o que fazer agora.</p>
+
+      <div id="bd-errbox" class="bd-errors" hidden>
+        <h3 id="bd-errtitle">Faltou preencher</h3>
+        <ul id="bd-errlist"></ul>
+      </div>
+
+      <form id="bd-form" novalidate>
+        <div class="bd-row">
+          <div class="bd-field">
+            <label for="bd-nome">Seu nome</label>
+            <input type="text" id="bd-nome" name="nome" autocomplete="name" placeholder="Ex.: Ana Ribeiro">
+          </div>
+          <div class="bd-field">
+            <label for="bd-fone">WhatsApp</label>
+            <input type="tel" id="bd-fone" name="fone" inputmode="tel" autocomplete="tel"
+                   placeholder="(31) 9 9999-9999" aria-describedby="bd-fone-h">
+            <p class="bd-hint" id="bd-fone-h">Usamos só para avisar quando o orçamento fechar.</p>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="bd-legend">Qual aparelho?</legend>
+          <div class="bd-chips" id="bd-aparelho">
+            <input type="radio" name="aparelho" id="ap-celular" value="celular" checked>
+            <label class="bd-chip" for="ap-celular">Celular</label>
+            <input type="radio" name="aparelho" id="ap-notebook" value="notebook">
+            <label class="bd-chip" for="ap-notebook">Notebook</label>
+            <input type="radio" name="aparelho" id="ap-tablet" value="tablet">
+            <label class="bd-chip" for="ap-tablet">Tablet</label>
+          </div>
+        </fieldset>
+
+        <div class="bd-field" style="max-width:280px">
+          <label for="bd-idade">Tempo de uso do aparelho</label>
+          <select id="bd-idade" name="idade">
+            <option value="novo">Menos de 2 anos</option>
+            <option value="medio" selected>De 2 a 4 anos</option>
+            <option value="velho">Mais de 4 anos</option>
+          </select>
+        </div>
+
+        <div class="bd-field">
+          <label for="bd-desc">O que aconteceu?</label>
+          <div class="bd-ta-wrap">
+            <textarea id="bd-desc" name="descricao" aria-describedby="bd-desc-h"
+              placeholder="Ex.: caiu no chão e a tela ficou toda trincada, mas ainda aparece imagem"></textarea>
+            <button type="button" class="bd-mic" id="bd-mic" aria-pressed="false" aria-label="Ditar a descrição por voz">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v4"/>
+              </svg>
+            </button>
+          </div>
+          <p class="bd-hint" id="bd-desc-h">Escreva pelo menos uma frase, ou toque no microfone e fale.</p>
+        </div>
+
+        <div class="bd-actions">
+          <button type="submit" class="bd-btn" id="bd-send">Fazer o diagnóstico</button>
+          <button type="button" class="bd-btn ghost" id="bd-exemplo">Usar um exemplo</button>
+        </div>
+      </form>
+
+      <p class="bd-note" id="bd-micnote" hidden></p>
+    </div>
+
+    <div id="bd-resultado" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- ===================== MEUS PROTOCOLOS ===================== -->
+  <section role="tabpanel" id="panel-meus" aria-labelledby="tab-meus" tabindex="0" hidden>
+    <div class="bd-card">
+      <h2>Meus protocolos</h2>
+      <p>Tudo que você já enviou deste aparelho, com o status atualizado pela oficina.</p>
+      <div id="bd-meus-lista"></div>
+    </div>
+  </section>
+
+  <!-- ===================== BANCADA INTERNA ===================== -->
+  <section role="tabpanel" id="panel-int" aria-labelledby="tab-int" tabindex="0" hidden>
+    <div class="bd-card">
+      <h2>Bancada interna</h2>
+      <p>A fila do técnico, já classificada pela triagem. As mais urgentes sobem para o topo sozinhas.</p>
+
+      <dl class="bd-counts" id="bd-counts"></dl>
+
+      <div class="bd-filters" role="group" aria-label="Filtrar por urgência">
+        <button type="button" data-f="todas" aria-pressed="true">Todas</button>
+        <button type="button" data-f="alta" aria-pressed="false">Urgentes</button>
+        <button type="button" data-f="media" aria-pressed="false">Atenção</button>
+        <button type="button" data-f="baixa" aria-pressed="false">Tranquilas</button>
+      </div>
+
+      <div id="bd-int-lista"></div>
+    </div>
+  </section>
+
+  <p class="bd-foot" id="bd-foot">
+    Trabalho da matéria <strong>Padrões Web para No Code e Low Code</strong>.
+  </p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     0. CONFIGURAÇÃO
+     Cole aqui a URL do webhook do Make. Enquanto estiver vazia, a
+     triagem roda em modo demonstração dentro do navegador.
+     ============================================================ */
+  var WEBHOOK = "https://hook.us2.make.com/fzdmkk59mwst5p2aj8271m2ndcdmnkp5";
+
+  /* ============================================================
+     1. CATÁLOGO DA OFICINA
+     Preços e prazos que a Bancada pratica. No projeto publicado
+     este catálogo vai para o prompt: a IA classifica, ela não inventa preço.
+     ============================================================ */
+  var CATALOGO = {
+    oxidacao: {
+      nome:"Limpeza de oxidação",
+      urgencia:"alta",
+      prazo:"1 a 2 dias úteis",
+      faixa:{celular:[220,480], notebook:[340,720], tablet:[260,540]},
+      cuidados:[
+        "Não tente ligar nem colocar para carregar — é isso que queima a placa.",
+        "Nada de arroz ou secador: o arroz não seca nada e o secador espalha o líquido.",
+        "Traga hoje se puder. Oxidação avança por hora, não por dia."
+      ],
+      checagens:[
+        "Há quanto tempo o aparelho teve contato com o líquido?",
+        "Era água limpa, água do mar ou bebida açucarada?",
+        "Chegou a ligar depois que molhou?"
+      ],
+      risco:"Em aparelho molhado o orçamento só fecha depois de abrir: a limpeza pode revelar componente queimado."
+    },
+    tela: {
+      nome:"Troca de tela",
+      urgencia:"media",
+      prazo:"2 a 3 dias úteis",
+      faixa:{celular:[280,650], notebook:[450,980], tablet:[350,760]},
+      cuidados:[
+        "Passe uma fita transparente sobre a trinca para o vidro não soltar lasca.",
+        "Evite usar o aparelho no bolso: a trinca abre mais a cada pressão."
+      ],
+      checagens:[
+        "A imagem ainda aparece inteira ou tem mancha e faixa colorida?",
+        "O toque responde em toda a tela?"
+      ],
+      risco:""
+    },
+    bateria: {
+      nome:"Troca de bateria",
+      urgencia:"media",
+      prazo:"1 dia útil",
+      faixa:{celular:[150,290], notebook:[260,540], tablet:[220,420]},
+      cuidados:[
+        "Se a bateria estiver estufada, pare de usar e não carregue a noite toda.",
+        "Tire a capinha: bateria inchada empurra a tela por dentro."
+      ],
+      checagens:[
+        "A traseira ou o touchpad está estufado?",
+        "O aparelho desliga sozinho antes de zerar a porcentagem?"
+      ],
+      risco:""
+    },
+    conector: {
+      nome:"Troca do conector de carga",
+      urgencia:"media",
+      prazo:"1 a 2 dias úteis",
+      faixa:{celular:[120,240], notebook:[210,420], tablet:[160,300]},
+      cuidados:[
+        "Antes de trazer, teste outro cabo e outra tomada — metade dos casos é o cabo.",
+        "Não force o cabo em ângulo: isso solta o conector da placa."
+      ],
+      checagens:[
+        "Só carrega em uma posição específica do cabo?",
+        "O conector está com fiapo ou sujeira visível?"
+      ],
+      risco:""
+    },
+    placa: {
+      nome:"Reparo de placa",
+      urgencia:"alta",
+      prazo:"3 a 7 dias úteis",
+      faixa:{celular:[350,900], notebook:[480,1300], tablet:[400,1000]},
+      cuidados:[
+        "Não deixe em carregador por horas tentando ligar — isso esquenta a placa.",
+        "Se houver dado importante, avise na entrada: a recuperação é feita antes do reparo."
+      ],
+      checagens:[
+        "Acende alguma luz, vibra ou esquenta quando você tenta ligar?",
+        "Antes de parar, teve queda, líquido ou carregador genérico?"
+      ],
+      risco:"Reparo de placa só tem orçamento fechado depois do teste em bancada."
+    },
+    software: {
+      nome:"Manutenção de software",
+      urgencia:"baixa",
+      prazo:"mesmo dia",
+      faixa:{celular:[90,170], notebook:[130,280], tablet:[100,190]},
+      cuidados:[
+        "Faça backup das fotos antes de trazer — pode ser preciso formatar.",
+        "Anote a senha da conta Google ou Apple: sem ela o aparelho não reativa."
+      ],
+      checagens:[
+        "Começou depois de alguma atualização ou instalação?",
+        "Trava sempre no mesmo aplicativo?"
+      ],
+      risco:""
+    },
+    limpeza: {
+      nome:"Limpeza interna e troca de pasta térmica",
+      urgencia:"baixa",
+      prazo:"1 dia útil",
+      faixa:{celular:[110,190], notebook:[160,340], tablet:[130,240]},
+      cuidados:[
+        "Use o aparelho em superfície dura: cama e sofá tampam a saída de ar.",
+        "Se desligar sozinho de tão quente, pare de usar até a limpeza."
+      ],
+      checagens:[
+        "A ventoinha faz barulho alto ou parou de girar?",
+        "Esquenta mais em jogo e vídeo ou o tempo todo?"
+      ],
+      risco:""
+    }
+  };
+
+  /* Regras de triagem. Cada uma tem peso: o peso vira a confiança mostrada. */
+  var REGRAS = [
+    {cat:"oxidacao", peso:.95, re:/(molh|agua|água|chuva|piscina|liquid|líquid|caf[eé]|refrigerante|cerveja|suco|umidade|vaso)/i},
+    {cat:"tela",     peso:.90, re:/(tela|display|vidro|trinc|rachad|quebr|estilha|mancha roxa|listra|risco na tela|touch n[ãa]o)/i},
+    {cat:"bateria",  peso:.90, re:/(bateria|descarreg|nao segura carga|não segura carga|acaba rapido|acaba rápido|estuf|inch|desliga sozinho|porcentagem)/i},
+    {cat:"conector", peso:.85, re:/(conector|entrada de carga|n[ãa]o carrega|so carrega|só carrega|cabo|tomada|carregador|porta usb|pino)/i},
+    {cat:"placa",    peso:.80, re:/(n[ãa]o liga|nao ligou|morreu|apagou|sem sinal de vida|curto|queimou|cheiro de queimado|luz pisca)/i},
+    {cat:"software", peso:.80, re:/(lento|travando|trava|v[ií]rus|an[úu]ncio|propaganda|reiniciando|sistema|atualiza|aplicativo|app fecha|senha)/i},
+    {cat:"limpeza",  peso:.75, re:/(esquent|quente|ventoinha|cooler|barulho|ru[ií]do|poeira|superaquec|temperatura)/i}
+  ];
+
+  var ROTULO_APARELHO = {celular:"Celular", notebook:"Notebook", tablet:"Tablet"};
+  var ROTULO_URG = {alta:"Urgente", media:"Atenção", baixa:"Sem pressa"};
+  var STATUS = ["Recebido","Em análise","Orçamento enviado","Em reparo","Pronto para retirada"];
+
+  /* ============================================================
+     2. TRIAGEM
+     A IA responde só o que exige interpretação: categoria, confiança,
+     hipótese alternativa, fatos que ela extraiu do relato, cuidados e
+     perguntas de checagem daquele caso.
+     Preço, prazo e risco NÃO vêm da IA — saem do catálogo acima.
+     É isso que impede o modelo de inventar valor para o cliente.
+     ============================================================ */
+  function completar(ia, entrada){
+    var item = CATALOGO[ia.chave] || CATALOGO.software;
+    var faixa = item.faixa[entrada.aparelho] || item.faixa.celular;
+    var medio = (faixa[0] + faixa[1]) / 2;
+
+    /* vale a pena consertar? decisão do catálogo, com base no custo e no tempo de uso */
+    var teto = {novo:1400, medio:900, velho:520}[entrada.idade];
+    var vale = medio <= teto;
+    var justificativa;
+    if (entrada.idade === "velho" && !vale){
+      justificativa = "Num aparelho com mais de 4 anos, um reparo nessa faixa costuma passar de metade do que ele vale hoje. Vale conversar sobre troca antes de aprovar.";
+    } else if (!vale){
+      justificativa = "O valor está no limite do que compensa. Quando você trouxer, o técnico confirma na bancada antes de qualquer peça ser pedida.";
+    } else if (entrada.idade === "novo"){
+      justificativa = "Aparelho novo e reparo pontual: compensa consertar com folga.";
+    } else {
+      justificativa = "O custo estimado fica bem abaixo do valor do aparelho. Compensa consertar.";
+    }
+
+    var alt = (ia.alternativa && CATALOGO[ia.alternativa]) ? CATALOGO[ia.alternativa].nome : null;
+    var urg = ["alta","media","baixa"].indexOf(ia.urgencia) >= 0 ? ia.urgencia : item.urgencia;
+
+    return {
+      categoria: item.nome,
+      chave: ia.chave,
+      confianca: Math.max(0, Math.min(1, Number(ia.confianca) || 0.5)),
+      alternativa: alt,
+      urgencia: urg,
+      faixa: {min:faixa[0], max:faixa[1]},
+      prazo: item.prazo,
+      vale_a_pena: vale,
+      justificativa: justificativa,
+      fatos: Array.isArray(ia.fatos_extraidos) ? ia.fatos_extraidos.slice(0,4) : [],
+      cuidados_agora: (Array.isArray(ia.cuidados_agora) && ia.cuidados_agora.length) ? ia.cuidados_agora.slice(0,4) : item.cuidados,
+      checagens: (Array.isArray(ia.checagens) && ia.checagens.length) ? ia.checagens.slice(0,4) : item.checagens,
+      resumo_tecnico: ia.resumo_para_tecnico || "",
+      risco: item.risco
+    };
+  }
+
+  /* Modo demonstração. Devolve EXATAMENTE o mesmo formato que o Make
+     devolve, para a interface não precisar saber de onde veio. */
+  function triarLocal(entrada){
+    var texto = entrada.descricao || "";
+    var achados = [];
+    REGRAS.forEach(function(r){
+      var m = texto.match(new RegExp(r.re.source, "gi"));
+      if (m) achados.push({cat:r.cat, peso:r.peso, hits:m.length});
+    });
+
+    var principal, confianca, secundaria = null;
+    if (!achados.length){
+      principal = "software";
+      confianca = 0.38;
+    } else {
+      achados.sort(function(a,b){ return (b.peso + b.hits*0.02) - (a.peso + a.hits*0.02); });
+      principal = achados[0].cat;
+      confianca = Math.min(0.96, achados[0].peso + (achados[0].hits - 1) * 0.02);
+      if (achados.length > 1){
+        secundaria = achados[1].cat;
+        confianca = Math.max(0.52, confianca - 0.12);
+      }
+      if (texto.trim().length < 25) confianca = Math.max(0.40, confianca - 0.15);
+    }
+
+    var fatos = [];
+    if (/(molh|agua|água|piscina|chuva|liquid|líquid)/i.test(texto)) fatos.push("Houve contato com líquido");
+    if (/(tentei ligar|liguei|coloquei para carregar|botei para carregar)/i.test(texto)) fatos.push("O aparelho foi ligado ou carregado depois do ocorrido");
+    if (/(caiu|queda|derrub)/i.test(texto)) fatos.push("Houve queda ou impacto");
+    if (/(ontem|hoje|semana|m[êe]s|dias)/i.test(texto)) fatos.push("O relato indica quando começou");
+    if (!fatos.length) fatos.push("Relato sem sinais de queda, líquido ou impacto");
+
+    return {
+      chave: principal,
+      confianca: Math.round(confianca * 100) / 100,
+      alternativa: secundaria,
+      urgencia: CATALOGO[principal].urgencia,
+      fatos_extraidos: fatos,
+      cuidados_agora: CATALOGO[principal].cuidados,
+      checagens: CATALOGO[principal].checagens,
+      resumo_para_tecnico: CATALOGO[principal].nome + " — " + ROTULO_APARELHO[entrada.aparelho].toLowerCase() + ", relato do cliente sugere " + CATALOGO[principal].nome.toLowerCase() + "."
+    };
+  }
+
+  /* ============================================================
+     3. ARMAZENAMENTO (troca pelo Data store do Make no projeto final)
+     ============================================================ */
+  var CHAVE = "bancada.protocolos.v1";
+
+  var SEMENTES = [
+    {protocolo:"BCD-260915-004", exemplo:true, criadoEm:"2026-09-15T14:20:00", nome:"Ana Ribeiro", fone:"(31) 9 8812-4407",
+     aparelho:"celular", idade:"medio", descricao:"Caiu na pia com a torneira aberta e agora não liga de jeito nenhum.",
+     status:"Em reparo",
+     diag:{categoria:"Limpeza de oxidação", chave:"oxidacao", confianca:.94, urgencia:"alta", faixa:{min:220,max:480}, prazo:"1 a 2 dias úteis"}},
+    {protocolo:"BCD-260916-007", exemplo:true, criadoEm:"2026-09-16T09:05:00", nome:"Diego Matos", fone:"(31) 9 9145-2280",
+     aparelho:"notebook", idade:"velho", descricao:"Esquenta muito e a ventoinha faz um barulho alto desde o mês passado.",
+     status:"Orçamento enviado",
+     diag:{categoria:"Limpeza interna e troca de pasta térmica", chave:"limpeza", confianca:.83, urgencia:"baixa", faixa:{min:160,max:340}, prazo:"1 dia útil"}},
+    {protocolo:"BCD-260916-011", exemplo:true, criadoEm:"2026-09-16T17:41:00", nome:"Rafaela Prado", fone:"(31) 9 9630-7715",
+     aparelho:"celular", idade:"novo", descricao:"A tela trincou inteira numa queda, mas a imagem continua aparecendo normal.",
+     status:"Recebido",
+     diag:{categoria:"Troca de tela", chave:"tela", confianca:.91, urgencia:"media", faixa:{min:280,max:650}, prazo:"2 a 3 dias úteis"}}
+  ];
+
+  function ler(){
+    try{
+      var cru = localStorage.getItem(CHAVE);
+      if (!cru) return SEMENTES.slice();
+      var dados = JSON.parse(cru);
+      return Array.isArray(dados) ? dados : SEMENTES.slice();
+    }catch(e){ return SEMENTES.slice(); }
+  }
+  function gravar(lista){
+    try{ localStorage.setItem(CHAVE, JSON.stringify(lista)); }catch(e){ /* navegação privada: segue em memória */ }
+    memoria = lista;
+  }
+  var memoria = ler();
+
+  function novoProtocolo(){
+    var d = new Date();
+    var p = function(n){ return String(n).padStart(2,"0"); };
+    var seq = String(memoria.length + 1).padStart(3,"0");
+    return "BCD-" + String(d.getFullYear()).slice(2) + p(d.getMonth()+1) + p(d.getDate()) + "-" + seq;
+  }
+
+  /* ============================================================
+     4. UTILIDADES
+     ============================================================ */
+  var $ = function(s, ctx){ return (ctx||document).querySelector(s); };
+  var $$ = function(s, ctx){ return Array.prototype.slice.call((ctx||document).querySelectorAll(s)); };
+  function reais(n){ return "R$ " + n.toLocaleString("pt-BR"); }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function dataCurta(iso){
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString("pt-BR", {day:"2-digit", month:"2-digit"}) + " às " +
+           d.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+  }
+
+  /* ============================================================
+     5. ABAS (padrão tablist com setas do teclado)
+     ============================================================ */
+  var tabs = $$('[role="tab"]');
+  function abrirAba(alvo, foco){
+    tabs.forEach(function(t){
+      var sel = t === alvo;
+      t.setAttribute("aria-selected", sel ? "true" : "false");
+      t.tabIndex = sel ? 0 : -1;
+      $("#" + t.getAttribute("aria-controls")).hidden = !sel;
+    });
+    if (foco) alvo.focus();
+    if (alvo.id === "tab-meus") pintarMeus();
+    if (alvo.id === "tab-int") pintarInterna();
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener("click", function(){ abrirAba(t, false); });
+    t.addEventListener("keydown", function(ev){
+      var j = null;
+      if (ev.key === "ArrowRight") j = (i + 1) % tabs.length;
+      if (ev.key === "ArrowLeft")  j = (i - 1 + tabs.length) % tabs.length;
+      if (ev.key === "Home") j = 0;
+      if (ev.key === "End")  j = tabs.length - 1;
+      if (j !== null){ ev.preventDefault(); abrirAba(tabs[j], true); }
+    });
+  });
+
+  /* ============================================================
+     6. VALIDAÇÃO DO FORMULÁRIO
+     ============================================================ */
+  var form = $("#bd-form"), caixaErro = $("#bd-errbox"), listaErro = $("#bd-errlist");
+
+  function validar(){
+    var erros = [];
+    var nome = $("#bd-nome"), fone = $("#bd-fone"), desc = $("#bd-desc");
+    [nome, fone, desc].forEach(function(c){ c.setAttribute("aria-invalid","false"); });
+
+    if (!nome.value.trim()){
+      erros.push({id:"bd-nome", msg:"Diga como podemos te chamar."});
+    }
+    var digitos = fone.value.replace(/\D/g, "");
+    if (digitos.length < 10 || digitos.length > 11){
+      erros.push({id:"bd-fone", msg:"O WhatsApp precisa ter DDD e número — 10 ou 11 dígitos."});
+    }
+    if (desc.value.trim().length < 15){
+      erros.push({id:"bd-desc", msg:"Conte um pouco mais sobre o problema: pelo menos uma frase completa."});
+    }
+
+    erros.forEach(function(e){ $("#" + e.id).setAttribute("aria-invalid","true"); });
+
+    if (erros.length){
+      listaErro.innerHTML = erros.map(function(e){
+        return '<li><a href="#' + e.id + '">' + esc(e.msg) + "</a></li>";
+      }).join("");
+      caixaErro.hidden = false;
+      caixaErro.setAttribute("tabindex","-1");
+      caixaErro.focus();
+      return null;
+    }
+    caixaErro.hidden = true;
+    return {
+      nome: nome.value.trim(),
+      fone: fone.value.trim(),
+      aparelho: $('input[name="aparelho"]:checked').value,
+      idade: $("#bd-idade").value,
+      descricao: desc.value.trim()
+    };
+  }
+
+  listaErro.addEventListener("click", function(ev){
+    var a = ev.target.closest("a");
+    if (!a) return;
+    ev.preventDefault();
+    var alvo = document.getElementById(a.getAttribute("href").slice(1));
+    if (alvo) alvo.focus();
+  });
+
+  /* ============================================================
+     7. ENVIO E RENDERIZAÇÃO DA FICHA
+     ============================================================ */
+  var saida = $("#bd-resultado"), botao = $("#bd-send");
+
+  function esperar(ms){
+    return function(v){ return new Promise(function(r){ window.setTimeout(function(){ r(v); }, ms); }); };
+  }
+
+  function pedirAoMake(entrada){
+    var corpo = new URLSearchParams();
+    Object.keys(entrada).forEach(function(k){ corpo.append(k, entrada[k]); });
+    return fetch(WEBHOOK, {
+      method: "POST",
+      headers: {"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},
+      body: corpo.toString()
+    }).then(function(r){
+      if (!r.ok) throw new Error("A bancada respondeu com erro " + r.status + ".");
+      return r.text();
+    }).then(function(t){
+      /* O modelo costuma cercar o JSON com crases. Em vez de brigar com o
+         prompt, normalizamos aqui: e mais barato e nunca falha em producao. */
+      var limpo = String(t).trim()
+        .replace(/^`{3}\s*json/i, "")
+        .replace(/^`{3}/, "")
+        .replace(/`{3}\s*$/, "")
+        .trim();
+      try {
+        return JSON.parse(limpo);
+      } catch (e) {
+        throw new Error("A bancada devolveu uma resposta que nao consegui ler.");
+      }
+    });
+  }
+
+  function restaurarBotao(){
+    botao.disabled = false;
+    botao.textContent = "Fazer o diagnóstico";
+  }
+
+  function falhar(e){
+    restaurarBotao();
+    saida.innerHTML = '<div class="bd-card"><h2>Não consegui fazer a triagem agora</h2>' +
+      '<p style="margin-bottom:0">' + esc(e && e.message ? e.message : "A conexão falhou.") +
+      ' Tente de novo em instantes, ou fale direto com a loja no WhatsApp — seu relato não se perdeu.</p></div>';
+  }
+
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var entrada = validar();
+    if (!entrada) return;
+    entrada.protocolo = novoProtocolo();   /* vai junto no POST: o Make registra o mesmo número */
+
+    botao.disabled = true;
+    botao.innerHTML = '<span class="bd-spin" aria-hidden="true"></span>Analisando…';
+    saida.innerHTML = '<div class="bd-card"><p class="bd-hint" style="margin:0">Lendo seu relato e comparando com os atendimentos da bancada…</p></div>';
+
+    var promessa = WEBHOOK
+      ? pedirAoMake(entrada)
+      : Promise.resolve(triarLocal(entrada)).then(esperar(900));
+
+    promessa.then(function(ia){
+      var diag = completar(ia, entrada);
+      var registro = {
+        protocolo: entrada.protocolo,
+        criadoEm: new Date().toISOString(),
+        nome: entrada.nome, fone: entrada.fone,
+        aparelho: entrada.aparelho, idade: entrada.idade, descricao: entrada.descricao,
+        status: "Recebido",
+        diag: diag
+      };
+      memoria = [registro].concat(memoria);
+      gravar(memoria);
+
+      saida.innerHTML = ficha(registro);
+      restaurarBotao();
+      var art = saida.querySelector(".bd-ficha");
+      art.setAttribute("tabindex","-1");
+      art.focus();
+    }).catch(falhar);
+  });
+
+  function ficha(reg){
+    var d = reg.diag;
+    var h = [];
+    h.push('<article class="bd-ficha">');
+    h.push('<div class="bd-ficha-top">');
+    h.push('<span class="bd-proto"><small>Protocolo</small>' + esc(reg.protocolo) + "</span>");
+    h.push('<span class="bd-urg ' + d.urgencia + '">' + ROTULO_URG[d.urgencia] + "</span>");
+    h.push("</div>");
+
+    h.push('<div class="bd-ficha-body">');
+    h.push('<p class="bd-block" style="margin:0 0 2px; font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)">Provável causa</p>');
+    h.push('<h3 class="bd-diag-h">' + esc(d.categoria) + "</h3>");
+
+    h.push('<div class="bd-conf">');
+    h.push("<span>Confiança da triagem</span>");
+    h.push('<span class="bd-bar" role="img" aria-label="Confiança de ' + Math.round(d.confianca*100) + ' por cento"><i style="width:' + Math.round(d.confianca*100) + '%"></i></span>');
+    h.push("<b>" + Math.round(d.confianca*100) + "%</b>");
+    h.push("</div>");
+
+    if (d.alternativa){
+      h.push('<p class="bd-note" style="margin:-8px 0 18px">Sua descrição também combina com <strong>' + esc(d.alternativa) + "</strong>. O técnico confirma na bancada antes de orçar.</p>");
+    }
+
+    h.push('<dl class="bd-grid">');
+    h.push('<div class="bd-cell"><dt>Faixa de preço</dt><dd>' + reais(d.faixa.min) + " <span>a</span> " + reais(d.faixa.max) + "</dd></div>");
+    h.push('<div class="bd-cell"><dt>Prazo estimado</dt><dd style="font-size:14px">' + esc(d.prazo) + "</dd></div>");
+    h.push('<div class="bd-cell"><dt>Aparelho</dt><dd style="font-size:14px">' + ROTULO_APARELHO[reg.aparelho] + "</dd></div>");
+    h.push("</dl>");
+
+    h.push('<div class="bd-perf" aria-hidden="true"></div>');
+
+    h.push('<div class="bd-block"><div class="bd-verdict ' + (d.vale_a_pena ? "sim" : "nao") + '">');
+    h.push('<span aria-hidden="true" style="font-size:18px; line-height:1.2">' + (d.vale_a_pena ? "✓" : "!") + "</span>");
+    h.push("<div><b>" + (d.vale_a_pena ? "Compensa consertar" : "Pense duas vezes antes de aprovar") + "</b><p>" + esc(d.justificativa) + "</p></div>");
+    h.push("</div></div>");
+
+    if (d.fatos && d.fatos.length){
+      h.push('<div class="bd-block"><h3>O que entendemos do seu relato</h3><ul class="bd-list f">');
+      d.fatos.forEach(function(f){ h.push("<li>" + esc(f) + "</li>"); });
+      h.push("</ul></div>");
+    }
+
+    h.push('<div class="bd-block"><h3>O que fazer agora</h3><ul class="bd-list">');
+    d.cuidados_agora.forEach(function(c){ h.push("<li>" + esc(c) + "</li>"); });
+    h.push("</ul></div>");
+
+    h.push('<div class="bd-block"><h3>O técnico vai confirmar</h3><ul class="bd-list q">');
+    d.checagens.forEach(function(c){ h.push("<li>" + esc(c) + "</li>"); });
+    h.push("</ul></div>");
+
+    if (d.risco){
+      h.push('<p class="bd-note" style="margin-top:18px"><strong>Importante:</strong> ' + esc(d.risco) + "</p>");
+    }
+
+    h.push('<p class="bd-note" style="margin-top:18px">Guardamos este diagnóstico no protocolo <strong>' + esc(reg.protocolo) +
+           "</strong>. Acompanhe pela aba <em>Meus protocolos</em> — avisamos no WhatsApp quando o orçamento fechar.</p>");
+    h.push("</div></article>");
+    return h.join("");
+  }
+
+  /* ============================================================
+     8. EXEMPLO PRONTO
+     ============================================================ */
+  $("#bd-exemplo").addEventListener("click", function(){
+    $("#bd-nome").value = "Marcos Vinícius";
+    $("#bd-fone").value = "(31) 9 9271-3388";
+    $("#ap-celular").checked = true;
+    $("#bd-idade").value = "medio";
+    $("#bd-desc").value = "Deixei cair na piscina, tirei rápido e seguei, mas agora ele só esquenta e não liga mais.";
+    $("#bd-desc").focus();
+  });
+
+  /* ============================================================
+     9. DITADO POR VOZ (Web Speech API)
+     ============================================================ */
+  var Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var mic = $("#bd-mic"), micNota = $("#bd-micnote"), rec = null, ouvindo = false;
+
+  function avisoMic(txt){
+    micNota.textContent = txt;
+    micNota.hidden = false;
+  }
+
+  if (!Rec){
+    mic.hidden = true;
+  } else {
+    mic.addEventListener("click", function(){
+      if (ouvindo && rec){ rec.stop(); return; }
+      try{
+        rec = new Rec();
+        rec.lang = "pt-BR";
+        rec.interimResults = false;
+        rec.continuous = false;
+        rec.onstart = function(){
+          ouvindo = true;
+          mic.setAttribute("aria-pressed","true");
+          mic.setAttribute("aria-label","Parar o ditado");
+          avisoMic("Pode falar. Toque de novo para parar.");
+        };
+        rec.onresult = function(ev){
+          var t = ev.results[0][0].transcript;
+          var campo = $("#bd-desc");
+          campo.value = (campo.value ? campo.value.trim() + " " : "") + t;
+        };
+        rec.onerror = function(ev){
+          if (ev.error === "not-allowed" || ev.error === "service-not-allowed"){
+            avisoMic("O microfone está bloqueado nesta janela de prévia. No site publicado, o ditado funciona normalmente — você pode escrever aqui enquanto isso.");
+          } else {
+            avisoMic("Não consegui captar o áudio. Tente de novo ou escreva a descrição.");
+          }
+        };
+        rec.onend = function(){
+          ouvindo = false;
+          mic.setAttribute("aria-pressed","false");
+          mic.setAttribute("aria-label","Ditar a descrição por voz");
+        };
+        rec.start();
+      }catch(e){
+        avisoMic("Este navegador não permite ditado por voz aqui. Pode escrever a descrição normalmente.");
+      }
+    });
+  }
+
+  /* ============================================================
+     10. MEUS PROTOCOLOS
+     ============================================================ */
+  function pintarMeus(){
+    var alvo = $("#bd-meus-lista");
+    var lista = memoria.filter(function(r){ return !r.exemplo; });
+    if (!lista.length){
+      alvo.innerHTML = '<p class="bd-empty">Você ainda não enviou nenhum diagnóstico.<br>Faça o primeiro na aba <strong>Diagnóstico</strong>.</p>';
+      return;
+    }
+    alvo.innerHTML = '<ul class="bd-tickets">' + lista.map(cartao).join("") + "</ul>";
+  }
+
+  function cartao(reg, comStatus){
+    var d = reg.diag;
+    var h = [];
+    h.push('<li class="bd-ticket ' + d.urgencia + '">');
+    h.push('<div class="bd-ticket-main">');
+    h.push('<span class="p">' + esc(reg.protocolo) + " · " + dataCurta(reg.criadoEm) +
+           (reg.exemplo ? ' <span class="bd-seed">exemplo</span>' : "") + "</span>");
+    h.push("<h4>" + esc(d.categoria) + "</h4>");
+    h.push('<p class="d">' + ROTULO_APARELHO[reg.aparelho] + " · " + esc(reg.nome) + " — “" + esc(reg.descricao) + "”</p>");
+    h.push("</div>");
+    h.push('<div class="bd-ticket-side">');
+    h.push('<span class="bd-urg ' + d.urgencia + '">' + ROTULO_URG[d.urgencia] + "</span>");
+    h.push('<span class="v">' + reais(d.faixa.min) + "–" + reais(d.faixa.max) + "</span>");
+    if (comStatus){
+      var id = "st-" + reg.protocolo.replace(/[^A-Za-z0-9]/g,"");
+      h.push('<label class="bd-sr" for="' + id + '">Status do protocolo ' + esc(reg.protocolo) + "</label>");
+      h.push('<select class="bd-status" id="' + id + '" data-proto="' + esc(reg.protocolo) + '">' +
+        STATUS.map(function(s){
+          return '<option value="' + esc(s) + '"' + (s === reg.status ? " selected" : "") + ">" + esc(s) + "</option>";
+        }).join("") + "</select>");
+    } else {
+      h.push('<span class="bd-status" style="cursor:default">' + esc(reg.status) + "</span>");
+    }
+    h.push("</div></li>");
+    return h.join("");
+  }
+
+  /* ============================================================
+     11. BANCADA INTERNA
+     ============================================================ */
+  var filtro = "todas";
+
+  $$(".bd-filters button").forEach(function(b){
+    b.addEventListener("click", function(){
+      filtro = b.dataset.f;
+      $$(".bd-filters button").forEach(function(o){
+        o.setAttribute("aria-pressed", o === b ? "true" : "false");
+      });
+      pintarInterna();
+    });
+  });
+
+  function pintarInterna(){
+    var ordem = {alta:0, media:1, baixa:2};
+    var todas = memoria.slice().sort(function(a,b){
+      var da = ordem[a.diag.urgencia], db = ordem[b.diag.urgencia];
+      if (da !== db) return da - db;
+      return new Date(b.criadoEm) - new Date(a.criadoEm);
+    });
+
+    var cont = {alta:0, media:0, baixa:0};
+    todas.forEach(function(r){ cont[r.diag.urgencia]++; });
+
+    $("#bd-counts").innerHTML =
+      '<div class="bd-count"><dt>Na fila</dt><dd>' + todas.length + "</dd></div>" +
+      '<div class="bd-count alta"><dt>Urgentes</dt><dd>' + cont.alta + "</dd></div>" +
+      '<div class="bd-count media"><dt>Atenção</dt><dd>' + cont.media + "</dd></div>" +
+      '<div class="bd-count baixa"><dt>Sem pressa</dt><dd>' + cont.baixa + "</dd></div>";
+
+    var lista = filtro === "todas" ? todas : todas.filter(function(r){ return r.diag.urgencia === filtro; });
+    var alvo = $("#bd-int-lista");
+    if (!lista.length){
+      alvo.innerHTML = '<p class="bd-empty">Nenhuma solicitação nesta faixa de urgência.</p>';
+      return;
+    }
+    alvo.innerHTML = '<ul class="bd-tickets">' + lista.map(function(r){ return cartao(r, true); }).join("") + "</ul>";
+
+    $$(".bd-status", alvo).forEach(function(sel){
+      if (sel.tagName !== "SELECT") return;
+      sel.addEventListener("change", function(){
+        var p = sel.dataset.proto;
+        memoria.forEach(function(r){ if (r.protocolo === p) r.status = sel.value; });
+        gravar(memoria);
+      });
+    });
+  }
+
+  var selo = document.querySelector(".bd-demo");
+  var rodape = document.getElementById("bd-foot");
+  if (WEBHOOK){
+    if (selo) selo.textContent = "Ao vivo";
+    if (rodape) rodape.insertAdjacentHTML("beforeend",
+      "<br>A triagem vem do <code>Make &rarr; Claude</code>; quem monta esta tela \u00e9 o JavaScript, aqui no navegador.");
+  } else if (rodape){
+    rodape.insertAdjacentHTML("beforeend",
+      "<br>Modo demonstra\u00e7\u00e3o: a triagem roda no pr\u00f3prio navegador, no mesmo formato que o Make devolve.");
+  }
+
+  pintarInterna();
+})();
+</script>

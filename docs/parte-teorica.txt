@@ -1,0 +1,101 @@
+BANCADA: TRIAGEM TÉCNICA INTELIGENTE COM NO-CODE, PADRÕES WEB E IA
+
+Paulo Henrique de Oliveira
+Padrões Web para No Code e Low Code
+Faculdade de Tecnologia Rocketseat / UniFECAF
+
+
+1 PROBLEMA, PÚBLICO E SOLUÇÃO
+
+Escolhi trabalhar com uma assistência técnica de bairro porque ela tem exatamente o perfil descrito no enunciado: presença digital limitada às redes sociais, sem equipe de desenvolvimento e com todo o atendimento acontecendo manualmente.
+
+O problema que observei nesse tipo de negócio não é a falta de site. É que a pergunta que o cliente faz — "quanto custa trocar a tela?" — não tem resposta curta. A resposta honesta depende do modelo, do tipo de dano e do que o técnico vai encontrar quando abrir o aparelho. Como essa resposta não cabe numa mensagem de direct, a conversa morre ali e o cliente procura outra loja.
+
+O público da solução é a pessoa que acabou de quebrar o aparelho e precisa decidir, ainda em casa, se vale a pena consertar.
+
+A solução que desenvolvi é a Bancada: uma aplicação onde o cliente descreve o defeito com as próprias palavras, digitando ou falando, e recebe em segundos a provável causa, o quanto o sistema confia nessa leitura, a faixa de preço praticada pela loja, o prazo, se compensa consertar e o que fazer antes de sair de casa. O mesmo atendimento gera um protocolo e entra numa fila interna já classificada por urgência, que o técnico usa para priorizar o dia.
+
+
+2 FERRAMENTA NO-CODE ESCOLHIDA E JUSTIFICATIVA
+
+Escolhi o Framer.
+
+Comparei com o Webflow, que era minha primeira opção por dar mais controle sobre o HTML gerado. Descartei depois de conferir a documentação: o elemento Code Embed do Webflow não funciona no plano gratuito, ele exige workspace pago ou site plan ativo. Como a exigência central deste trabalho é justamente não se limitar aos componentes prontos da ferramenta, uma plataforma que cobra para eu inserir código próprio inviabilizaria o trabalho.
+
+O Framer, no plano gratuito, publica em subdomínio próprio e não restringe código personalizado. Também considerei Softr e Glide, mas os dois são orientados a aplicativos sobre base de dados e deixam a personalização visual com CSS mais travada, o que seria um problema num trabalho em que a personalização é o que está sendo avaliado.
+
+A divisão de responsabilidades ficou assim: as seções institucionais do site — capa, serviços, como funciona, dúvidas e rodapé — são montadas visualmente no Framer, arrastando componentes. O componente de triagem, que é o coração da aplicação e não existe pronto em nenhuma plataforma, entra por um bloco de Embed.
+
+
+3 COMO HTML, CSS E JAVASCRIPT AMPLIARAM A SOLUÇÃO
+
+Todo o componente de triagem é código escrito por mim, sem nenhuma biblioteca externa. Foi uma decisão consciente: eu queria demonstrar domínio das APIs nativas do navegador, que é a fonte de pesquisa indicada no próprio enunciado.
+
+O ditado por voz usa a Web Speech API do navegador. O cliente toca no microfone, fala o que aconteceu e o texto aparece no campo. Onde o navegador não suporta, o botão simplesmente não aparece, e onde o microfone é bloqueado, o sistema explica o que houve em vez de falhar em silêncio.
+
+A navegação entre as três áreas da aplicação segue o padrão de abas recomendado pelo W3C, com os papéis tablist, tab e tabpanel, tabindex rotativo e movimentação pelas setas do teclado, Home e End. O Framer entrega componentes de aba prontos, mas eles não seguem esse padrão.
+
+A validação do formulário é própria, usando a API de validação do HTML apenas como base. Quando algo falta, monto uma lista de erros no topo, levo o foco para ela e transformo cada erro num link que leva direto ao campo com problema, marcando o campo com aria-invalid.
+
+O resultado da triagem é renderizado inteiramente em JavaScript a partir de dados, dentro de um container com aria-live, para que quem usa leitor de tela seja avisado quando o diagnóstico chega.
+
+O tema claro e escuro é resolvido com variáveis CSS declaradas em três estados: o padrão do sistema, o claro forçado e o escuro forçado. Nenhuma cor é definida apenas dentro de uma media query, o que evitaria o erro clássico de texto de um tema sobre o fundo do outro.
+
+Os protocolos do visitante ficam em localStorage, sempre dentro de try/catch, porque em aba anônima o acesso ao armazenamento lança exceção.
+
+
+4 RECURSO DE IA E AUTOMAÇÃO
+
+A automação é um cenário no Make: um webhook recebe o formulário, um módulo de IA processa o relato com o modelo Claude, um módulo de resposta devolve o resultado ao navegador e um data store registra o atendimento na fila da oficina.
+
+A decisão de projeto mais importante do trabalho está aqui, e ela é o oposto do que eu tinha feito antes: a IA não escreve o texto que o cliente lê.
+
+O que a IA devolve é um objeto JSON com categoria do defeito, escolhida dentro de uma lista fechada de sete opções, nível de confiança, hipótese alternativa quando o relato admite outra leitura, urgência, os fatos que ela extraiu do relato, as perguntas que o técnico precisa confirmar naquele caso específico e um resumo de uma linha para a fila interna. Quem transforma esses dados em interface é o JavaScript.
+
+Isso muda o papel do modelo: ele deixa de ser autor e passa a ser o motor de decisão. E resolve um problema prático. Preço, prazo e o veredito de "compensa consertar" não passam pela IA em momento nenhum — saem de um catálogo da loja que está no código e é calculado com base no aparelho e no tempo de uso informados. Assim o modelo não tem como inventar um valor para o cliente, que é o risco mais concreto de usar IA num contexto comercial.
+
+O prompt proíbe explicitamente citar valores, calcular datas, prometer resultado e sair do formato JSON, inclusive quando o texto do cliente contiver instruções — o relato é tratado como dado, nunca como ordem.
+
+
+5 RESPONSIVIDADE E ACESSIBILIDADE
+
+Tratei acessibilidade como requisito, não como acabamento, porque é um item que o enunciado avalia.
+
+O layout usa flex e grid com gap, unidades relativas e nenhuma largura mínima maior que a tela. Testei em 390 pixels e em 1280 pixels, incluindo o estado com a ficha de diagnóstico aberta, e não há rolagem horizontal em nenhum deles.
+
+Em acessibilidade: a navegação inteira funciona por teclado com foco visível; as cores vêm de tokens pensados para contraste nos dois temas; o resultado é anunciado por aria-live; os campos têm rótulo associado e o grupo de opções está em fieldset com legend; a urgência é comunicada por texto e forma além da cor, para não depender de percepção cromática; e prefers-reduced-motion desliga as animações.
+
+Verifiquei a jornada completa em navegador automatizado e não houve nenhum erro de console.
+
+[PREENCHER APÓS PUBLICAR: resultado da auditoria de acessibilidade do Lighthouse.]
+
+
+6 LIMITAÇÕES E PRINCIPAIS APRENDIZADOS
+
+A limitação mais evidente é o plano gratuito. O Framer publica apenas em subdomínio e mantém a marca da ferramenta na página. O Make gratuito tem teto de créditos, e como cada diagnóstico com registro na fila consome em torno de sete créditos, a aplicação não suportaria uso real sem plano pago.
+
+O microfone tem limitação de contexto: a Web Speech API depende de permissão e não funciona em páginas incorporadas em certos ambientes. Precisei tratar o erro explicitamente para que a falha fosse explicada ao usuário em vez de parecer um defeito.
+
+O maior aprendizado foi sobre onde a IA deve entrar. Num trabalho anterior eu tinha usado IA para gerar o texto final que o usuário lia, e o resultado era difícil de controlar. Aqui, ao restringir a saída do modelo a dados estruturados e manter as regras de negócio no código, ganhei previsibilidade sem perder a capacidade de interpretar texto livre, que é exatamente o que um formulário de opções fixas não faz.
+
+O segundo aprendizado foi que no-code não dispensa conhecimento técnico, dispensa infraestrutura. Eu não precisei de servidor, deploy nem banco de dados, mas precisei de HTML semântico, CSS com estratégia de tema, JavaScript assíncrono, noção de CORS e das APIs do navegador. Sem isso, a aplicação teria parado no que a ferramenta visual oferece pronto.
+
+[PREENCHER APÓS MONTAR O CENÁRIO: uma limitação concreta que o Framer ou o Make impuseram durante a construção, com a solução adotada.]
+
+
+REFERÊNCIAS
+
+FRAMER. Framer Academy: Custom Code. Disponível em: https://www.framer.com/academy/lessons/custom-code. Acesso em: 24 set. 2026.
+
+MAKE. Make Help Center. Disponível em: https://www.make.com/en/help. Acesso em: 24 set. 2026.
+
+MOZILLA. MDN Web Docs: Web APIs. Disponível em: https://developer.mozilla.org/. Acesso em: 24 set. 2026.
+
+WEBFLOW. Custom code embed. Disponível em: https://help.webflow.com/hc/en-us/articles/33961332238611-Custom-code-embed. Acesso em: 24 set. 2026.
+
+WORLD WIDE WEB CONSORTIUM. ARIA Authoring Practices Guide: Tabs Pattern. Disponível em: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/. Acesso em: 24 set. 2026.
+
+
+FORMATAÇÃO ABNT A APLICAR NO DOCUMENTO
+
+Fonte Arial ou Times New Roman 12. Espaçamento entre linhas 1,5. Margens: superior e esquerda 3 cm, inferior e direita 2 cm. Recuo de primeira linha de 1,25 cm nos parágrafos. Títulos de seção numerados, em caixa alta e negrito, alinhados à esquerda. Referências em ordem alfabética, espaçamento simples e separadas por uma linha em branco.
