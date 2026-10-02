@@ -9,7 +9,7 @@ ordenada por urgência.
 Trabalho da disciplina **Padrões Web para No Code e Low Code** —
 Faculdade de Tecnologia Rocketseat / UniFECAF.
 
-**Aplicação publicada:** `[COLAR A URL DO FRAMER AQUI]`
+**Aplicação publicada:** https://blushing-yard-728562.framer.app
 
 ---
 
@@ -41,9 +41,9 @@ real do cliente ("compensa?") e já entrega o caso classificado para a oficina.
 
 | Camada | Escolha |
 |---|---|
-| Plataforma no-code | **Framer** (plano gratuito, publica em `.framer.website`) |
+| Plataforma no-code | **Framer** (plano gratuito, publica em `.framer.app`) |
 | Componente personalizado | HTML, CSS e JavaScript escritos à mão, sem biblioteca |
-| Automação | **Make** — webhook, módulo de IA e data store |
+| Automação | **Make** — webhook, módulo de IA e resposta ao webhook (três módulos) |
 | IA | **Claude Haiku** via AI by Make, como classificador |
 
 O Webflow foi descartado na escolha: o *Code Embed* não funciona no plano
@@ -61,12 +61,14 @@ próprio, dentro de um Embed:
 - **Validação própria** com resumo de erros focável, links para o campo com
   problema e `aria-invalid`
 - **`aria-live`** anunciando o diagnóstico quando ele chega
-- **Tokens CSS** cobrindo tema claro e escuro nos três estados (sistema, claro
-  forçado, escuro forçado)
+- **Tokens CSS** para toda a paleta, em vez de cores soltas
 - **`prefers-reduced-motion`** desligando as animações
 - **`localStorage`** guardando os protocolos daquele visitante, sempre dentro de
   `try/catch` porque em aba anônima ele falha
 - Layout em `flex`/`grid` com `gap`, sem rolagem horizontal a 390 px
+- **`lang` e `title` definidos por script dentro do Embed**, porque o Framer
+  monta o iframe sem nenhum dos dois — sem isso o leitor de tela lê o português
+  com fonemas de inglês e anuncia "quadro sem nome"
 
 ## O recurso inteligente
 
@@ -84,20 +86,49 @@ contrato de saída em [`make/contrato-saida.json`](make/contrato-saida.json).
 
 ## Responsividade e acessibilidade
 
-Verificado em Chromium a 390 px e a 1280 px: sem rolagem horizontal em nenhum
-estado, inclusive com a ficha aberta. Navegação completa por teclado com foco
-visível. Cores definidas por token para os dois temas. Nenhum erro de console na
-jornada completa.
+Medido no site publicado, em navegador automatizado:
+
+| Teste | Resultado |
+|---|---|
+| **axe-core** (WCAG 2.1 A e AA) a 1200, 900 e 390 px, tema claro e escuro, em três estados da tela (formulário, ficha pronta, painel interno) | **0 violações** |
+| **Lighthouse**, categoria Acessibilidade, na URL publicada | **98/100** |
+| Rolagem horizontal e corte do componente nos três breakpoints | nenhum |
+| Erros de console vindos do código da aplicação | nenhum |
+
+O único item que o Lighthouse ainda aponta é `landmark-one-main`: a página não
+tem um elemento `<main>`. Quem gera a marcação das seções é o Framer, e o plano
+gratuito não dá acesso à tag HTML de cada frame — está documentado como
+limitação da plataforma, não como descuido do projeto. O relatório está em
+`docs/prints/06-lighthouse.png`.
+
+A auditoria de design confirmou que a página do Framer e o componente usam
+exatamente os mesmos valores: fundo `rgb(237,239,242)`, texto `rgb(22,27,33)`,
+acento `rgb(160,81,30)`, Archivo nos títulos e IBM Plex Sans no corpo.
+
+## As duas cópias do componente
+
+| Arquivo | Para que serve |
+|---|---|
+| `bancada-diagnostico.html` | Fonte comentada. Abre sozinha no navegador e tem tema escuro por `prefers-color-scheme`. |
+| `framer/embed-publicado.html` | Exatamente o que está colado nos três Embeds do Framer e no ar hoje. |
+
+A cópia do Framer é a mesma aplicação com dois ajustes de contexto: os
+comentários saem para encurtar o campo do Embed, e o bloco de tema escuro é
+removido porque a página do Framer é só clara — um cartão escuro dentro de uma
+página clara pareceria defeito.
 
 ## Prints
 
 | | |
 |---|---|
-| `docs/prints/01-formulario.png` | Formulário no celular |
-| `docs/prints/02-diagnostico.png` | Ficha de diagnóstico |
-| `docs/prints/03-painel.png` | Fila interna por urgência |
-| `docs/prints/04-cenario-make.png` | Cenário rodando no Make |
-| `docs/prints/05-lighthouse.png` | Lighthouse de acessibilidade |
+| `docs/prints/01-site-desktop.png` | Site publicado, desktop (1200 px) |
+| `docs/prints/02-site-celular.png` | Site publicado, celular (390 px) |
+| `docs/prints/03-diagnostico-desktop.png` | Diagnóstico e fila interna, desktop |
+| `docs/prints/04-diagnostico-celular.png` | Diagnóstico e fila interna, celular |
+| `docs/prints/06-lighthouse.png` | Lighthouse de acessibilidade: 98 |
+
+Os quatro primeiros são capturas de página inteira do site publicado, tiradas em
+navegador automatizado durante o teste de ponta a ponta.
 
 ## Como testar
 
@@ -113,9 +144,13 @@ triagem simulada no próprio navegador, no mesmo formato que o Make devolve.
 ## Estrutura
 
 ```
-bancada-diagnostico.html      componente completo, pronto para o Embed do Framer
-make/prompt-triagem.txt       prompt do classificador
-make/contrato-saida.json      formato de saída aceito pelo site
-make/montagem-do-cenario.md   como montar o cenário no Make
-docs/roteiro-video.md         roteiro do vídeo pitch
+bancada-diagnostico.html        componente completo, fonte comentada
+framer/embed-publicado.html     o que está colado no Embed do Framer hoje
+make/prompt-triagem.txt         prompt do classificador
+make/contrato-saida.json        formato de saída aceito pelo site
+make/blueprint-bancada.json     blueprint do cenário, pronto para importar
+make/montagem-do-cenario.md     como montar o cenário no Make
+docs/roteiro-video.md           roteiro do vídeo pitch
+docs/parte-teorica.txt          texto da parte teórica
+docs/prints/                    capturas de tela
 ```

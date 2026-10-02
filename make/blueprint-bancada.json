@@ -63,7 +63,7 @@
       "parameters": {},
       "mapper": {
         "status": "200",
-        "body": "{{2.result}}",
+        "body": "{{2.Answer}}",
         "headers": [
           {
             "key": "Content-Type",

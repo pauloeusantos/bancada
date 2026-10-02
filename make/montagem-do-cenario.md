@@ -1,8 +1,8 @@
 # Cenário no Make — Bancada
 
 > **Regra número um:** não abra, não duplique e não edite o cenário do
-> ComunicaAI. Tudo aqui é novo: pasta nova, cenário novo, webhook novo, data
-> store novo. O ComunicaAI continua no ar sem ser tocado.
+> ComunicaAI. Tudo aqui é novo: pasta nova, cenário novo e webhook novo.
+> O ComunicaAI continua no ar sem ser tocado.
 
 Time: `2850909` · zona `us2` · plano Free (799,5 de 1000 créditos, 1 de 2
 cenários ativos na última verificação).
@@ -21,8 +21,8 @@ Módulo **Webhooks → Custom webhook**. Ja criado, com o nome `bancada`:
 Essa URL ja esta colada na constante `WEBHOOK` do `bancada-diagnostico.html`.
 
 Campos que o site envia (form-urlencoded): `protocolo`, `nome`, `fone`,
-`aparelho`, `idade`, `descricao`. No prompt eles aparecem como `{{2.campo}}`
-porque o webhook é o módulo 2 na numeração do Make.
+`aparelho`, `idade`, `descricao`. No prompt eles aparecem como `{{1.campo}}`
+porque o webhook é o módulo 1 na numeração do Make.
 
 Para o Make aprender a estrutura: clique em *Redetermine data structure*,
 abra o site e envie um diagnóstico de teste.
@@ -37,8 +37,8 @@ trabalho). Modelo: **Claude Haiku 4.5**.
 
 Cole o conteúdo de `prompt-triagem.txt` no campo de prompt.
 
-**Cuidado conhecido:** depois de colar, confira se os tokens `{{2.aparelho}}`,
-`{{2.idade}}` e `{{2.descricao}}` voltaram **coloridos**. Se aparecerem como
+**Cuidado conhecido:** depois de colar, confira se os tokens `{{1.aparelho}}`,
+`{{1.idade}}` e `{{1.descricao}}` voltaram **coloridos**. Se aparecerem como
 texto cinza, o mapeamento morreu — apague o campo e monte de novo clicando nas
 variáveis do painel lateral em vez de colar.
 
@@ -47,7 +47,9 @@ variáveis do painel lateral em vez de colar.
 Módulo **Webhooks → Webhook response**.
 
 - Status: `200`
-- Body: `{{3.result}}` (o resultado do módulo de IA — confira o número)
+- Body: `{{2.Answer}}` — a saída do módulo de IA. **É `Answer`, não `result`:**
+  com o nome errado o campo volta vazio e o Make responde `Accepted` mesmo com a
+  execução marcada como bem-sucedida.
 - Headers:
   - `Content-Type` = `application/json; charset=utf-8`
   - `Access-Control-Allow-Origin` = `*`
@@ -55,7 +57,12 @@ Módulo **Webhooks → Webhook response**.
 O segundo header não é opcional. Sem ele o navegador bloqueia a resposta e o
 site mostra erro mesmo com o cenário funcionando.
 
-## 4. Fila (Data store)
+## 4. Fila (Data store) — NAO IMPLEMENTADO, opcional
+
+> Esta seção **não faz parte do que foi entregue**. O cenário no ar tem três
+> módulos: webhook, IA e resposta. A fila interna do site é montada no próprio
+> navegador a partir do JSON devolvido. O passo abaixo fica registrado como
+> caminho de evolução, caso a fila precise ser compartilhada entre máquinas.
 
 Crie um data store novo chamado **`Bancada - Fila`** — não reaproveite o
 `ComunicaAI - Log de Geracoes`.
@@ -87,7 +94,7 @@ Em `status`, valor fixo `Recebido`.
 
 ## 5. Testar sem gastar crédito à toa
 
-Cada execução com log custa em torno de 7 créditos. Teste pela linha de
+Cada execução custa em torno de 6 créditos. Teste pela linha de
 comando antes de testar pelo site:
 
 ```bash

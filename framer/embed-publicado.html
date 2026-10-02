@@ -1,4 +1,40 @@
-<meta charset="utf-8">
+
+<html>
+    <head>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            :root {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            * {
+                box-sizing: border-box;
+                -webkit-font-smoothing: inherit;
+            }
+
+            h1, h2, h3, h4, h5, h6, p, figure {
+                margin: 0;
+            }
+
+            body, input, textarea, select, button {
+                font-size: 12px;
+                font-family: sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <meta charset="utf-8">
 <title>Bancada — diagnóstico</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
@@ -14,39 +50,17 @@
     --sans:"IBM Plex Sans", system-ui, -apple-system, Segoe UI, sans-serif;
     --display:"Archivo", "IBM Plex Sans", system-ui, sans-serif;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      color-scheme:dark;
-      --ground:#13171B; --surface:#1B2126; --surface-2:#222930; --surface-3:#2B333A;
-      --line:#313A42; --line-strong:#44505A;
-      --ink:#E7EBEF; --ink-2:#9BA6B0; --ink-3:#919CA7;
-      --accent:#E0864A; --accent-ink:#1B2126; --accent-soft:#38281C; --accent-line:#5A4331;
-      --ok:#57C094; --ok-soft:#17312A; --warn:#E0AA45; --warn-soft:#332815; --crit:#F0776E; --crit-soft:#3A1E1E;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.8);
-    }
-  }
-  :root[data-theme="dark"]{
-    color-scheme:dark;
-    --ground:#13171B; --surface:#1B2126; --surface-2:#222930; --surface-3:#2B333A;
-    --line:#313A42; --line-strong:#44505A;
-    --ink:#E7EBEF; --ink-2:#9BA6B0; --ink-3:#919CA7;
-    --accent:#E0864A; --accent-ink:#1B2126; --accent-soft:#38281C; --accent-line:#5A4331;
-    --ok:#57C094; --ok-soft:#17312A; --warn:#E0AA45; --warn-soft:#332815; --crit:#F0776E; --crit-soft:#3A1E1E;
-    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.8);
-  }
-
   *{box-sizing:border-box}
   body{
     margin:0; background:var(--ground); color:var(--ink);
     font-family:var(--sans); font-size:16px; line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
-  /* width:100% e min-width:0 porque o Embed do Framer envolve isto num body
-     com display:flex — sem o min-width:0 o item se recusa a encolher abaixo do
-     conteúdo e a faixa de abas empurra o componente para fora da tela a 390px. */
-  .bd-wrap{max-width:760px; width:100%; min-width:0; margin:0 auto; padding-inline:16px; padding-block:24px 56px}
+  /* width:100% e min-width:0 porque o Embed do Framer envolve isto num body com
+     display:flex; sem min-width:0 o item nao encolhe abaixo do conteudo e a faixa
+     de abas empurra o componente para fora da tela a 390px. */
+  .bd-wrap{max-width:760px; width:100%; min-width:0; margin:0 auto; padding-inline:16px; padding-block:8px 24px}
 
-  /* ---------- cabeçalho ---------- */
   .bd-top{display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:18px}
   .bd-mark{
     width:42px; height:42px; flex:none; border-radius:9px; background:var(--accent);
@@ -65,7 +79,6 @@
     padding:5px 9px; border-radius:999px; white-space:nowrap;
   }
 
-  /* ---------- abas ---------- */
   .bd-tabs{display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:22px; overflow-x:auto}
   .bd-tabs button{
     appearance:none; background:none; border:0; border-bottom:2px solid transparent;
@@ -80,12 +93,11 @@
     .bd-tabs{gap:0}
     .bd-tabs button{padding:10px 7px; font-size:13px}
   }
-  :is(.bd-tabs button, .bd-btn, .bd-chip, .bd-mic, .bd-link, select, textarea, input):focus-visible{
+  :is(.bd-tabs button, .bd-btn, .bd-chip, .bd-mic, select, textarea, input):focus-visible{
     outline:2px solid var(--accent); outline-offset:2px; border-radius:6px;
   }
   [role="tabpanel"]:focus{outline:none}
 
-  /* ---------- cartões ---------- */
   .bd-card{
     background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
     box-shadow:var(--shadow); padding:20px;
@@ -97,7 +109,6 @@
   }
   .bd-card > h2 + p{margin:0 0 18px; color:var(--ink-2); font-size:14px; max-width:58ch}
 
-  /* ---------- formulário ---------- */
   .bd-field{display:flex; flex-direction:column; gap:6px; margin-bottom:18px}
   .bd-field > label, .bd-legend{font-size:13px; font-weight:600; letter-spacing:.01em}
   .bd-hint{font-size:12.5px; color:var(--ink-3); margin:0}
@@ -158,10 +169,9 @@
     border:1px dashed var(--line-strong); border-radius:var(--r); padding:10px 12px; margin-top:12px;
   }
 
-  /* ---------- ficha de bancada (resultado) ---------- */
   .bd-ficha{
     background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
-    box-shadow:var(--shadow); overflow:hidden; margin-top:16px;
+    box-shadow:var(--shadow); overflow:hidden;
   }
   .bd-ficha-top{
     background:var(--accent-soft); border-bottom:1px solid var(--accent-line);
@@ -231,7 +241,6 @@
   .bd-verdict.sim b{color:var(--ok)} .bd-verdict.nao b{color:var(--warn)}
   .bd-verdict p{margin:2px 0 0; color:var(--ink)}
 
-  /* ---------- listas de protocolo ---------- */
   .bd-empty{
     text-align:center; padding:34px 16px; color:var(--ink-2); font-size:14.5px;
     border:1px dashed var(--line-strong); border-radius:var(--r-lg); background:var(--surface-2);
@@ -307,7 +316,6 @@
     <button type="button" role="tab" id="tab-int" aria-controls="panel-int" aria-selected="false" tabindex="-1">Bancada interna</button>
   </div>
 
-  <!-- ===================== DIAGNÓSTICO ===================== -->
   <section role="tabpanel" id="panel-diag" aria-labelledby="tab-diag" tabindex="0">
     <div class="bd-card">
       <h2>Descubra o que seu aparelho tem antes de sair de casa</h2>
@@ -379,7 +387,6 @@
     <div id="bd-resultado" role="status" aria-live="polite"></div>
   </section>
 
-  <!-- ===================== MEUS PROTOCOLOS ===================== -->
   <section role="tabpanel" id="panel-meus" aria-labelledby="tab-meus" tabindex="0" hidden>
     <div class="bd-card">
       <h2>Meus protocolos</h2>
@@ -388,7 +395,6 @@
     </div>
   </section>
 
-  <!-- ===================== BANCADA INTERNA ===================== -->
   <section role="tabpanel" id="panel-int" aria-labelledby="tab-int" tabindex="0" hidden>
     <div class="bd-card">
       <h2>Bancada interna</h2>
@@ -416,31 +422,13 @@
 (function(){
   "use strict";
 
-  /* O Embed do Framer renderiza este conteúdo num iframe próprio, sem <html lang>.
-     Sem isso o leitor de tela lê o português com fonemas de inglês. */
   document.documentElement.lang = "pt-BR";
 
-  /* O Framer cria o iframe do Embed sem title; sem isso o leitor de tela anuncia
-     "quadro sem nome" e o axe acusa frame-title. Mesma origem, então dá para nomear daqui. */
-  try { if (window.frameElement && !window.frameElement.title) window.frameElement.title = "Diagnóstico da Bancada"; } catch (e) {}
-
-  /* ============================================================
-     0. CONFIGURAÇÃO
-     Cole aqui a URL do webhook do Make. Enquanto estiver vazia, a
-     triagem roda em modo demonstração dentro do navegador.
-     ============================================================ */
   var WEBHOOK = "https://hook.us2.make.com/fzdmkk59mwst5p2aj8271m2ndcdmnkp5";
 
-  /* ============================================================
-     1. CATÁLOGO DA OFICINA
-     Preços e prazos que a Bancada pratica. No projeto publicado
-     este catálogo vai para o prompt: a IA classifica, ela não inventa preço.
-     ============================================================ */
   var CATALOGO = {
     oxidacao: {
-      nome:"Limpeza de oxidação",
-      urgencia:"alta",
-      prazo:"1 a 2 dias úteis",
+      nome:"Limpeza de oxidação", urgencia:"alta", prazo:"1 a 2 dias úteis",
       faixa:{celular:[220,480], notebook:[340,720], tablet:[260,540]},
       cuidados:[
         "Não tente ligar nem colocar para carregar — é isso que queima a placa.",
@@ -455,9 +443,7 @@
       risco:"Em aparelho molhado o orçamento só fecha depois de abrir: a limpeza pode revelar componente queimado."
     },
     tela: {
-      nome:"Troca de tela",
-      urgencia:"media",
-      prazo:"2 a 3 dias úteis",
+      nome:"Troca de tela", urgencia:"media", prazo:"2 a 3 dias úteis",
       faixa:{celular:[280,650], notebook:[450,980], tablet:[350,760]},
       cuidados:[
         "Passe uma fita transparente sobre a trinca para o vidro não soltar lasca.",
@@ -470,9 +456,7 @@
       risco:""
     },
     bateria: {
-      nome:"Troca de bateria",
-      urgencia:"media",
-      prazo:"1 dia útil",
+      nome:"Troca de bateria", urgencia:"media", prazo:"1 dia útil",
       faixa:{celular:[150,290], notebook:[260,540], tablet:[220,420]},
       cuidados:[
         "Se a bateria estiver estufada, pare de usar e não carregue a noite toda.",
@@ -485,9 +469,7 @@
       risco:""
     },
     conector: {
-      nome:"Troca do conector de carga",
-      urgencia:"media",
-      prazo:"1 a 2 dias úteis",
+      nome:"Troca do conector de carga", urgencia:"media", prazo:"1 a 2 dias úteis",
       faixa:{celular:[120,240], notebook:[210,420], tablet:[160,300]},
       cuidados:[
         "Antes de trazer, teste outro cabo e outra tomada — metade dos casos é o cabo.",
@@ -500,9 +482,7 @@
       risco:""
     },
     placa: {
-      nome:"Reparo de placa",
-      urgencia:"alta",
-      prazo:"3 a 7 dias úteis",
+      nome:"Reparo de placa", urgencia:"alta", prazo:"3 a 7 dias úteis",
       faixa:{celular:[350,900], notebook:[480,1300], tablet:[400,1000]},
       cuidados:[
         "Não deixe em carregador por horas tentando ligar — isso esquenta a placa.",
@@ -515,9 +495,7 @@
       risco:"Reparo de placa só tem orçamento fechado depois do teste em bancada."
     },
     software: {
-      nome:"Manutenção de software",
-      urgencia:"baixa",
-      prazo:"mesmo dia",
+      nome:"Manutenção de software", urgencia:"baixa", prazo:"mesmo dia",
       faixa:{celular:[90,170], notebook:[130,280], tablet:[100,190]},
       cuidados:[
         "Faça backup das fotos antes de trazer — pode ser preciso formatar.",
@@ -530,9 +508,7 @@
       risco:""
     },
     limpeza: {
-      nome:"Limpeza interna e troca de pasta térmica",
-      urgencia:"baixa",
-      prazo:"1 dia útil",
+      nome:"Limpeza interna e troca de pasta térmica", urgencia:"baixa", prazo:"1 dia útil",
       faixa:{celular:[110,190], notebook:[160,340], tablet:[130,240]},
       cuidados:[
         "Use o aparelho em superfície dura: cama e sofá tampam a saída de ar.",
@@ -546,35 +522,24 @@
     }
   };
 
-  /* Regras de triagem. Cada uma tem peso: o peso vira a confiança mostrada. */
   var REGRAS = [
-    {cat:"oxidacao", peso:.95, re:/(molh|agua|água|chuva|piscina|liquid|líquid|caf[eé]|refrigerante|cerveja|suco|umidade|vaso)/i},
-    {cat:"tela",     peso:.90, re:/(tela|display|vidro|trinc|rachad|quebr|estilha|mancha roxa|listra|risco na tela|touch n[ãa]o)/i},
-    {cat:"bateria",  peso:.90, re:/(bateria|descarreg|nao segura carga|não segura carga|acaba rapido|acaba rápido|estuf|inch|desliga sozinho|porcentagem)/i},
-    {cat:"conector", peso:.85, re:/(conector|entrada de carga|n[ãa]o carrega|so carrega|só carrega|cabo|tomada|carregador|porta usb|pino)/i},
-    {cat:"placa",    peso:.80, re:/(n[ãa]o liga|nao ligou|morreu|apagou|sem sinal de vida|curto|queimou|cheiro de queimado|luz pisca)/i},
-    {cat:"software", peso:.80, re:/(lento|travando|trava|v[ií]rus|an[úu]ncio|propaganda|reiniciando|sistema|atualiza|aplicativo|app fecha|senha)/i},
-    {cat:"limpeza",  peso:.75, re:/(esquent|quente|ventoinha|cooler|barulho|ru[ií]do|poeira|superaquec|temperatura)/i}
+    {cat:"oxidacao", peso:.95, re:/(molh|agua|água|chuva|piscina|liquid|líquid)/i},
+    {cat:"tela",     peso:.90, re:/(tela|display|vidro|trinc|rachad|quebr)/i},
+    {cat:"bateria",  peso:.90, re:/(bateria|descarreg|estuf|inch|desliga sozinho)/i},
+    {cat:"conector", peso:.85, re:/(conector|n[ãa]o carrega|cabo|tomada|carregador)/i},
+    {cat:"placa",    peso:.80, re:/(n[ãa]o liga|morreu|curto|queimou|cheiro de queimado)/i},
+    {cat:"software", peso:.80, re:/(lento|travando|trava|v[ií]rus|reiniciando|senha)/i},
+    {cat:"limpeza",  peso:.75, re:/(esquent|quente|ventoinha|cooler|poeira|superaquec)/i}
   ];
 
   var ROTULO_APARELHO = {celular:"Celular", notebook:"Notebook", tablet:"Tablet"};
   var ROTULO_URG = {alta:"Urgente", media:"Atenção", baixa:"Sem pressa"};
   var STATUS = ["Recebido","Em análise","Orçamento enviado","Em reparo","Pronto para retirada"];
 
-  /* ============================================================
-     2. TRIAGEM
-     A IA responde só o que exige interpretação: categoria, confiança,
-     hipótese alternativa, fatos que ela extraiu do relato, cuidados e
-     perguntas de checagem daquele caso.
-     Preço, prazo e risco NÃO vêm da IA — saem do catálogo acima.
-     É isso que impede o modelo de inventar valor para o cliente.
-     ============================================================ */
   function completar(ia, entrada){
     var item = CATALOGO[ia.chave] || CATALOGO.software;
     var faixa = item.faixa[entrada.aparelho] || item.faixa.celular;
     var medio = (faixa[0] + faixa[1]) / 2;
-
-    /* vale a pena consertar? decisão do catálogo, com base no custo e no tempo de uso */
     var teto = {novo:1400, medio:900, velho:520}[entrada.idade];
     var vale = medio <= teto;
     var justificativa;
@@ -587,30 +552,22 @@
     } else {
       justificativa = "O custo estimado fica bem abaixo do valor do aparelho. Compensa consertar.";
     }
-
     var alt = (ia.alternativa && CATALOGO[ia.alternativa]) ? CATALOGO[ia.alternativa].nome : null;
     var urg = ["alta","media","baixa"].indexOf(ia.urgencia) >= 0 ? ia.urgencia : item.urgencia;
 
     return {
-      categoria: item.nome,
-      chave: ia.chave,
+      categoria: item.nome, chave: ia.chave,
       confianca: Math.max(0, Math.min(1, Number(ia.confianca) || 0.5)),
-      alternativa: alt,
-      urgencia: urg,
-      faixa: {min:faixa[0], max:faixa[1]},
-      prazo: item.prazo,
-      vale_a_pena: vale,
-      justificativa: justificativa,
+      alternativa: alt, urgencia: urg,
+      faixa: {min:faixa[0], max:faixa[1]}, prazo: item.prazo,
+      vale_a_pena: vale, justificativa: justificativa,
       fatos: Array.isArray(ia.fatos_extraidos) ? ia.fatos_extraidos.slice(0,4) : [],
       cuidados_agora: (Array.isArray(ia.cuidados_agora) && ia.cuidados_agora.length) ? ia.cuidados_agora.slice(0,4) : item.cuidados,
       checagens: (Array.isArray(ia.checagens) && ia.checagens.length) ? ia.checagens.slice(0,4) : item.checagens,
-      resumo_tecnico: ia.resumo_para_tecnico || "",
-      risco: item.risco
+      resumo_tecnico: ia.resumo_para_tecnico || "", risco: item.risco
     };
   }
 
-  /* Modo demonstração. Devolve EXATAMENTE o mesmo formato que o Make
-     devolve, para a interface não precisar saber de onde veio. */
   function triarLocal(entrada){
     var texto = entrada.descricao || "";
     var achados = [];
@@ -618,44 +575,29 @@
       var m = texto.match(new RegExp(r.re.source, "gi"));
       if (m) achados.push({cat:r.cat, peso:r.peso, hits:m.length});
     });
-
     var principal, confianca, secundaria = null;
-    if (!achados.length){
-      principal = "software";
-      confianca = 0.38;
-    } else {
+    if (!achados.length){ principal = "software"; confianca = 0.38; }
+    else {
       achados.sort(function(a,b){ return (b.peso + b.hits*0.02) - (a.peso + a.hits*0.02); });
       principal = achados[0].cat;
       confianca = Math.min(0.96, achados[0].peso + (achados[0].hits - 1) * 0.02);
-      if (achados.length > 1){
-        secundaria = achados[1].cat;
-        confianca = Math.max(0.52, confianca - 0.12);
-      }
+      if (achados.length > 1){ secundaria = achados[1].cat; confianca = Math.max(0.52, confianca - 0.12); }
       if (texto.trim().length < 25) confianca = Math.max(0.40, confianca - 0.15);
     }
-
     var fatos = [];
     if (/(molh|agua|água|piscina|chuva|liquid|líquid)/i.test(texto)) fatos.push("Houve contato com líquido");
-    if (/(tentei ligar|liguei|coloquei para carregar|botei para carregar)/i.test(texto)) fatos.push("O aparelho foi ligado ou carregado depois do ocorrido");
+    if (/(tentei ligar|liguei|coloquei para carregar)/i.test(texto)) fatos.push("O aparelho foi ligado ou carregado depois do ocorrido");
     if (/(caiu|queda|derrub)/i.test(texto)) fatos.push("Houve queda ou impacto");
-    if (/(ontem|hoje|semana|m[êe]s|dias)/i.test(texto)) fatos.push("O relato indica quando começou");
     if (!fatos.length) fatos.push("Relato sem sinais de queda, líquido ou impacto");
-
     return {
-      chave: principal,
-      confianca: Math.round(confianca * 100) / 100,
-      alternativa: secundaria,
-      urgencia: CATALOGO[principal].urgencia,
-      fatos_extraidos: fatos,
-      cuidados_agora: CATALOGO[principal].cuidados,
+      chave: principal, confianca: Math.round(confianca * 100) / 100,
+      alternativa: secundaria, urgencia: CATALOGO[principal].urgencia,
+      fatos_extraidos: fatos, cuidados_agora: CATALOGO[principal].cuidados,
       checagens: CATALOGO[principal].checagens,
-      resumo_para_tecnico: CATALOGO[principal].nome + " — " + ROTULO_APARELHO[entrada.aparelho].toLowerCase() + ", relato do cliente sugere " + CATALOGO[principal].nome.toLowerCase() + "."
+      resumo_para_tecnico: CATALOGO[principal].nome + " — " + ROTULO_APARELHO[entrada.aparelho].toLowerCase() + "."
     };
   }
 
-  /* ============================================================
-     3. ARMAZENAMENTO (troca pelo Data store do Make no projeto final)
-     ============================================================ */
   var CHAVE = "bancada.protocolos.v1";
 
   var SEMENTES = [
@@ -682,7 +624,7 @@
     }catch(e){ return SEMENTES.slice(); }
   }
   function gravar(lista){
-    try{ localStorage.setItem(CHAVE, JSON.stringify(lista)); }catch(e){ /* navegação privada: segue em memória */ }
+    try{ localStorage.setItem(CHAVE, JSON.stringify(lista)); }catch(e){ }
     memoria = lista;
   }
   var memoria = ler();
@@ -694,9 +636,6 @@
     return "BCD-" + String(d.getFullYear()).slice(2) + p(d.getMonth()+1) + p(d.getDate()) + "-" + seq;
   }
 
-  /* ============================================================
-     4. UTILIDADES
-     ============================================================ */
   var $ = function(s, ctx){ return (ctx||document).querySelector(s); };
   var $$ = function(s, ctx){ return Array.prototype.slice.call((ctx||document).querySelectorAll(s)); };
   function reais(n){ return "R$ " + n.toLocaleString("pt-BR"); }
@@ -712,9 +651,6 @@
            d.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
   }
 
-  /* ============================================================
-     5. ABAS (padrão tablist com setas do teclado)
-     ============================================================ */
   var tabs = $$('[role="tab"]');
   function abrirAba(alvo, foco){
     tabs.forEach(function(t){
@@ -739,29 +675,17 @@
     });
   });
 
-  /* ============================================================
-     6. VALIDAÇÃO DO FORMULÁRIO
-     ============================================================ */
   var form = $("#bd-form"), caixaErro = $("#bd-errbox"), listaErro = $("#bd-errlist");
 
   function validar(){
     var erros = [];
     var nome = $("#bd-nome"), fone = $("#bd-fone"), desc = $("#bd-desc");
     [nome, fone, desc].forEach(function(c){ c.setAttribute("aria-invalid","false"); });
-
-    if (!nome.value.trim()){
-      erros.push({id:"bd-nome", msg:"Diga como podemos te chamar."});
-    }
+    if (!nome.value.trim()) erros.push({id:"bd-nome", msg:"Diga como podemos te chamar."});
     var digitos = fone.value.replace(/\D/g, "");
-    if (digitos.length < 10 || digitos.length > 11){
-      erros.push({id:"bd-fone", msg:"O WhatsApp precisa ter DDD e número — 10 ou 11 dígitos."});
-    }
-    if (desc.value.trim().length < 15){
-      erros.push({id:"bd-desc", msg:"Conte um pouco mais sobre o problema: pelo menos uma frase completa."});
-    }
-
+    if (digitos.length < 10 || digitos.length > 11) erros.push({id:"bd-fone", msg:"O WhatsApp precisa ter DDD e número — 10 ou 11 dígitos."});
+    if (desc.value.trim().length < 15) erros.push({id:"bd-desc", msg:"Conte um pouco mais sobre o problema: pelo menos uma frase completa."});
     erros.forEach(function(e){ $("#" + e.id).setAttribute("aria-invalid","true"); });
-
     if (erros.length){
       listaErro.innerHTML = erros.map(function(e){
         return '<li><a href="#' + e.id + '">' + esc(e.msg) + "</a></li>";
@@ -773,11 +697,9 @@
     }
     caixaErro.hidden = true;
     return {
-      nome: nome.value.trim(),
-      fone: fone.value.trim(),
+      nome: nome.value.trim(), fone: fone.value.trim(),
       aparelho: $('input[name="aparelho"]:checked').value,
-      idade: $("#bd-idade").value,
-      descricao: desc.value.trim()
+      idade: $("#bd-idade").value, descricao: desc.value.trim()
     };
   }
 
@@ -789,9 +711,6 @@
     if (alvo) alvo.focus();
   });
 
-  /* ============================================================
-     7. ENVIO E RENDERIZAÇÃO DA FICHA
-     ============================================================ */
   var saida = $("#bd-resultado"), botao = $("#bd-send");
   var cartaoForm = $("#panel-diag > .bd-card");
 
@@ -810,18 +729,10 @@
       if (!r.ok) throw new Error("A bancada respondeu com erro " + r.status + ".");
       return r.text();
     }).then(function(t){
-      /* O modelo costuma cercar o JSON com crases. Em vez de brigar com o
-         prompt, normalizamos aqui: e mais barato e nunca falha em producao. */
       var limpo = String(t).trim()
-        .replace(/^`{3}\s*json/i, "")
-        .replace(/^`{3}/, "")
-        .replace(/`{3}\s*$/, "")
-        .trim();
-      try {
-        return JSON.parse(limpo);
-      } catch (e) {
-        throw new Error("A bancada devolveu uma resposta que nao consegui ler.");
-      }
+        .replace(/^`{3}\s*json/i, "").replace(/^`{3}/, "").replace(/`{3}\s*$/, "").trim();
+      try { return JSON.parse(limpo); }
+      catch (e) { throw new Error("A bancada devolveu uma resposta que nao consegui ler."); }
     });
   }
 
@@ -842,31 +753,26 @@
     ev.preventDefault();
     var entrada = validar();
     if (!entrada) return;
-    entrada.protocolo = novoProtocolo();   /* vai junto no POST: o Make registra o mesmo número */
+    entrada.protocolo = novoProtocolo();
 
     botao.disabled = true;
     botao.innerHTML = '<span class="bd-spin" aria-hidden="true"></span>Analisando…';
     saida.innerHTML = '<div class="bd-card"><p class="bd-hint" style="margin:0">Lendo seu relato e comparando com os atendimentos da bancada…</p></div>';
 
-    var promessa = WEBHOOK
-      ? pedirAoMake(entrada)
-      : Promise.resolve(triarLocal(entrada)).then(esperar(900));
+    var promessa = WEBHOOK ? pedirAoMake(entrada) : Promise.resolve(triarLocal(entrada)).then(esperar(900));
 
     promessa.then(function(ia){
       var diag = completar(ia, entrada);
       var registro = {
-        protocolo: entrada.protocolo,
-        criadoEm: new Date().toISOString(),
+        protocolo: entrada.protocolo, criadoEm: new Date().toISOString(),
         nome: entrada.nome, fone: entrada.fone,
         aparelho: entrada.aparelho, idade: entrada.idade, descricao: entrada.descricao,
-        status: "Recebido",
-        diag: diag
+        status: "Recebido", diag: diag
       };
       memoria = [registro].concat(memoria);
       gravar(memoria);
-
       saida.innerHTML = ficha(registro);
-      cartaoForm.hidden = true;          /* a ficha ocupa o lugar do formulario */
+      cartaoForm.hidden = true;
       restaurarBotao();
       var art = saida.querySelector(".bd-ficha");
       art.setAttribute("tabindex","-1");
@@ -882,60 +788,48 @@
     h.push('<span class="bd-proto"><small>Protocolo</small>' + esc(reg.protocolo) + "</span>");
     h.push('<span class="bd-urg ' + d.urgencia + '">' + ROTULO_URG[d.urgencia] + "</span>");
     h.push("</div>");
-
     h.push('<div class="bd-ficha-body">');
-    h.push('<p class="bd-block" style="margin:0 0 2px; font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)">Provável causa</p>');
+    h.push('<p style="margin:0 0 2px; font-size:11px; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3)">Provável causa</p>');
     h.push('<h3 class="bd-diag-h">' + esc(d.categoria) + "</h3>");
-
     h.push('<div class="bd-conf">');
     h.push("<span>Confiança da triagem</span>");
     h.push('<span class="bd-bar" role="img" aria-label="Confiança de ' + Math.round(d.confianca*100) + ' por cento"><i style="width:' + Math.round(d.confianca*100) + '%"></i></span>');
     h.push("<b>" + Math.round(d.confianca*100) + "%</b>");
     h.push("</div>");
-
     if (d.alternativa){
       h.push('<p class="bd-note" style="margin:-8px 0 18px">Sua descrição também combina com <strong>' + esc(d.alternativa) + "</strong>. O técnico confirma na bancada antes de orçar.</p>");
     }
-
     h.push('<dl class="bd-grid">');
     h.push('<div class="bd-cell"><dt>Faixa de preço</dt><dd>' + reais(d.faixa.min) + " <span>a</span> " + reais(d.faixa.max) + "</dd></div>");
     h.push('<div class="bd-cell"><dt>Prazo estimado</dt><dd style="font-size:14px">' + esc(d.prazo) + "</dd></div>");
     h.push('<div class="bd-cell"><dt>Aparelho</dt><dd style="font-size:14px">' + ROTULO_APARELHO[reg.aparelho] + "</dd></div>");
     h.push("</dl>");
-
     h.push('<div class="bd-perf" aria-hidden="true"></div>');
-
     h.push('<div class="bd-block"><div class="bd-verdict ' + (d.vale_a_pena ? "sim" : "nao") + '">');
     h.push('<span aria-hidden="true" style="font-size:18px; line-height:1.2">' + (d.vale_a_pena ? "✓" : "!") + "</span>");
     h.push("<div><b>" + (d.vale_a_pena ? "Compensa consertar" : "Pense duas vezes antes de aprovar") + "</b><p>" + esc(d.justificativa) + "</p></div>");
     h.push("</div></div>");
-
     if (d.fatos && d.fatos.length){
       h.push('<div class="bd-block"><h3>O que entendemos do seu relato</h3><ul class="bd-list f">');
       d.fatos.forEach(function(f){ h.push("<li>" + esc(f) + "</li>"); });
       h.push("</ul></div>");
     }
-
     h.push('<div class="bd-block"><h3>O que fazer agora</h3><ul class="bd-list">');
     d.cuidados_agora.forEach(function(c){ h.push("<li>" + esc(c) + "</li>"); });
     h.push("</ul></div>");
-
     h.push('<div class="bd-block"><h3>O técnico vai confirmar</h3><ul class="bd-list q">');
     d.checagens.forEach(function(c){ h.push("<li>" + esc(c) + "</li>"); });
     h.push("</ul></div>");
-
     if (d.risco){
       h.push('<p class="bd-note" style="margin-top:18px"><strong>Importante:</strong> ' + esc(d.risco) + "</p>");
     }
-
     h.push('<p class="bd-note" style="margin-top:18px">Guardamos este diagnóstico no protocolo <strong>' + esc(reg.protocolo) +
            "</strong>. Acompanhe pela aba <em>Meus protocolos</em> — avisamos no WhatsApp quando o orçamento fechar.</p>");
-    h.push('<div class="bd-actions" style="margin-top:20px"><button type="button" class="bd-btn ghost" id="bd-novo">Fazer outro diagn\u00f3stico</button></div>');
+    h.push('<div class="bd-actions" style="margin-top:20px"><button type="button" class="bd-btn ghost" id="bd-novo">Fazer outro diagnóstico</button></div>');
     h.push("</div></article>");
     return h.join("");
   }
 
-  /* Voltar ao formulario sem recarregar a pagina. */
   saida.addEventListener("click", function(ev){
     if (!ev.target.closest("#bd-novo")) return;
     saida.innerHTML = "";
@@ -944,9 +838,6 @@
     $("#bd-desc").focus();
   });
 
-  /* ============================================================
-     8. EXEMPLO PRONTO
-     ============================================================ */
   $("#bd-exemplo").addEventListener("click", function(){
     $("#bd-nome").value = "Marcos Vinícius";
     $("#bd-fone").value = "(31) 9 9271-3388";
@@ -956,27 +847,18 @@
     $("#bd-desc").focus();
   });
 
-  /* ============================================================
-     9. DITADO POR VOZ (Web Speech API)
-     ============================================================ */
   var Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
   var mic = $("#bd-mic"), micNota = $("#bd-micnote"), rec = null, ouvindo = false;
 
-  function avisoMic(txt){
-    micNota.textContent = txt;
-    micNota.hidden = false;
-  }
+  function avisoMic(txt){ micNota.textContent = txt; micNota.hidden = false; }
 
-  if (!Rec){
-    mic.hidden = true;
-  } else {
+  if (!Rec){ mic.hidden = true; }
+  else {
     mic.addEventListener("click", function(){
       if (ouvindo && rec){ rec.stop(); return; }
       try{
         rec = new Rec();
-        rec.lang = "pt-BR";
-        rec.interimResults = false;
-        rec.continuous = false;
+        rec.lang = "pt-BR"; rec.interimResults = false; rec.continuous = false;
         rec.onstart = function(){
           ouvindo = true;
           mic.setAttribute("aria-pressed","true");
@@ -990,7 +872,7 @@
         };
         rec.onerror = function(ev){
           if (ev.error === "not-allowed" || ev.error === "service-not-allowed"){
-            avisoMic("O microfone está bloqueado nesta janela de prévia. No site publicado, o ditado funciona normalmente — você pode escrever aqui enquanto isso.");
+            avisoMic("O microfone está bloqueado aqui. Você pode escrever a descrição normalmente.");
           } else {
             avisoMic("Não consegui captar o áudio. Tente de novo ou escreva a descrição.");
           }
@@ -1007,9 +889,6 @@
     });
   }
 
-  /* ============================================================
-     10. MEUS PROTOCOLOS
-     ============================================================ */
   function pintarMeus(){
     var alvo = $("#bd-meus-lista");
     var lista = memoria.filter(function(r){ return !r.exemplo; });
@@ -1028,7 +907,7 @@
     h.push('<span class="p">' + esc(reg.protocolo) + " · " + dataCurta(reg.criadoEm) +
            (reg.exemplo ? ' <span class="bd-seed">exemplo</span>' : "") + "</span>");
     h.push("<h4>" + esc(d.categoria) + "</h4>");
-    h.push('<p class="d">' + ROTULO_APARELHO[reg.aparelho] + " · " + esc(reg.nome) + " — “" + esc(reg.descricao) + "”</p>");
+    h.push('<p class="d">' + ROTULO_APARELHO[reg.aparelho] + " · " + esc(reg.nome) + " — " + esc(reg.descricao) + "</p>");
     h.push("</div>");
     h.push('<div class="bd-ticket-side">');
     h.push('<span class="bd-urg ' + d.urgencia + '">' + ROTULO_URG[d.urgencia] + "</span>");
@@ -1047,9 +926,6 @@
     return h.join("");
   }
 
-  /* ============================================================
-     11. BANCADA INTERNA
-     ============================================================ */
   var filtro = "todas";
 
   $$(".bd-filters button").forEach(function(b){
@@ -1069,16 +945,13 @@
       if (da !== db) return da - db;
       return new Date(b.criadoEm) - new Date(a.criadoEm);
     });
-
     var cont = {alta:0, media:0, baixa:0};
     todas.forEach(function(r){ cont[r.diag.urgencia]++; });
-
     $("#bd-counts").innerHTML =
       '<div class="bd-count"><dt>Na fila</dt><dd>' + todas.length + "</dd></div>" +
       '<div class="bd-count alta"><dt>Urgentes</dt><dd>' + cont.alta + "</dd></div>" +
       '<div class="bd-count media"><dt>Atenção</dt><dd>' + cont.media + "</dd></div>" +
       '<div class="bd-count baixa"><dt>Sem pressa</dt><dd>' + cont.baixa + "</dd></div>";
-
     var lista = filtro === "todas" ? todas : todas.filter(function(r){ return r.diag.urgencia === filtro; });
     var alvo = $("#bd-int-lista");
     if (!lista.length){
@@ -1086,7 +959,6 @@
       return;
     }
     alvo.innerHTML = '<ul class="bd-tickets">' + lista.map(function(r){ return cartao(r, true); }).join("") + "</ul>";
-
     $$(".bd-status", alvo).forEach(function(sel){
       if (sel.tagName !== "SELECT") return;
       sel.addEventListener("change", function(){
@@ -1102,12 +974,37 @@
   if (WEBHOOK){
     if (selo) selo.textContent = "Ao vivo";
     if (rodape) rodape.insertAdjacentHTML("beforeend",
-      "<br>A triagem vem do <code>Make &rarr; Claude</code>; quem monta esta tela \u00e9 o JavaScript, aqui no navegador.");
-  } else if (rodape){
-    rodape.insertAdjacentHTML("beforeend",
-      "<br>Modo demonstra\u00e7\u00e3o: a triagem roda no pr\u00f3prio navegador, no mesmo formato que o Make devolve.");
+      "<br>A triagem vem do <code>Make &rarr; Claude</code>; quem monta esta tela é o JavaScript, aqui no navegador.");
   }
 
   pintarInterna();
 })();
-</script>
+</script><script>  /* O Framer monta o iframe do Embed sem title; sem isso o leitor de tela anuncia "quadro sem nome". */  try { if (window.frameElement && !window.frameElement.title) window.frameElement.title = "Diagnóstico da Bancada"; } catch (e) {}</script>
+        <script type="module">
+            let height = 0
+
+            function sendEmbedHeight() {
+                window.parent.postMessage({
+                    embedHeight: height
+                }, "*")
+            }
+
+            const observer = new ResizeObserver((entries) => {
+                if (entries.length !== 1) return
+                const entry = entries[0]
+                if (entry.target !== document.body) return
+
+                height = entry.contentRect.height
+                sendEmbedHeight()
+            })
+
+            observer.observe(document.body)
+
+            window.addEventListener("message", (event) => {
+                if (event.source !== window.parent) return
+                if (event.data !== "getEmbedHeight") return
+                sendEmbedHeight()
+            })
+        </script>
+    <body>
+</html>
