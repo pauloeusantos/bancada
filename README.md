@@ -10,6 +10,7 @@ Trabalho da disciplina **Padrões Web para No Code e Low Code** —
 Faculdade de Tecnologia Rocketseat / UniFECAF.
 
 **Aplicação publicada:** https://blushing-yard-728562.framer.app
+**Parte teórica (ABNT):** [`docs/parte-teorica-abnt.pdf`](docs/parte-teorica-abnt.pdf)
 
 ---
 
@@ -69,6 +70,10 @@ próprio, dentro de um Embed:
 - **`lang` e `title` definidos por script dentro do Embed**, porque o Framer
   monta o iframe sem nenhum dos dois — sem isso o leitor de tela lê o português
   com fonemas de inglês e anuncia "quadro sem nome"
+- **`width:100%` + `min-width:0` no contêiner**, porque o Framer envolve o código
+  num `body` com `display:flex`: sem isso o item se recusa a encolher abaixo do
+  próprio conteúdo e a faixa de abas empurrava o componente para fora da tela a
+  390 px
 
 ## O recurso inteligente
 
@@ -92,7 +97,8 @@ Medido no site publicado, em navegador automatizado:
 |---|---|
 | **axe-core** (WCAG 2.1 A e AA) a 1200, 900 e 390 px, tema claro e escuro, em três estados da tela (formulário, ficha pronta, painel interno) | **0 violações** |
 | **Lighthouse**, categoria Acessibilidade, na URL publicada | **98/100** |
-| Rolagem horizontal e corte do componente nos três breakpoints | nenhum |
+| Rolagem horizontal, medida tanto na página quanto **dentro do iframe do Embed**, a 1200, 900, 390 e 360 px | nenhuma |
+| Corte do componente nos três breakpoints | nenhum |
 | Erros de console vindos do código da aplicação | nenhum |
 
 O único item que o Lighthouse ainda aponta é `landmark-one-main`: a página não
@@ -119,22 +125,37 @@ página clara pareceria defeito.
 
 ## Prints
 
-| | |
-|---|---|
-| `docs/prints/01-site-desktop.png` | Site publicado, desktop (1200 px) |
-| `docs/prints/02-site-celular.png` | Site publicado, celular (390 px) |
-| `docs/prints/03-diagnostico-desktop.png` | Diagnóstico e fila interna, desktop |
-| `docs/prints/04-diagnostico-celular.png` | Diagnóstico e fila interna, celular |
-| `docs/prints/06-lighthouse.png` | Lighthouse de acessibilidade: 98 |
+**A ficha de diagnóstico no site publicado:**
 
-Os quatro primeiros são capturas de página inteira do site publicado, tiradas em
-navegador automatizado durante o teste de ponta a ponta.
+<img src="docs/prints/03-diagnostico-desktop.png" width="640" alt="Ficha de diagnóstico no desktop, com causa provável, confiança, faixa de preço, prazo e veredito">
+
+**O cenário no Make — três módulos e o histórico de execuções:**
+
+<img src="docs/prints/05-cenario-make.png" width="760" alt="Cenário Bancada - Triagem no Make: webhook, módulo de IA e resposta, com execuções bem-sucedidas">
+
+**Lighthouse de acessibilidade na URL publicada:**
+
+<img src="docs/prints/06-lighthouse.png" width="520" alt="Relatório do Lighthouse com nota 98 em acessibilidade">
+
+| Arquivo | O que mostra |
+|---|---|
+| [`01-site-desktop.png`](docs/prints/01-site-desktop.png) | Site publicado inteiro, desktop (1200 px) |
+| [`02-site-celular.png`](docs/prints/02-site-celular.png) | Site publicado inteiro, celular (390 px) |
+| [`03-diagnostico-desktop.png`](docs/prints/03-diagnostico-desktop.png) | Ficha de diagnóstico, desktop |
+| [`04-diagnostico-celular.png`](docs/prints/04-diagnostico-celular.png) | Ficha de diagnóstico, celular |
+| [`05-cenario-make.png`](docs/prints/05-cenario-make.png) | Cenário no Make e histórico de execuções |
+| [`06-lighthouse.png`](docs/prints/06-lighthouse.png) | Lighthouse: 98 em acessibilidade ([relatório completo](docs/prints/lighthouse-relatorio.html)) |
+
+As capturas 01 a 04 foram tiradas do site publicado em navegador automatizado; a
+03 e a 04 mostram uma resposta real do Make registrada durante os testes.
 
 ## Como testar
 
-1. Abra a aplicação publicada (link no topo).
-2. Escolha o aparelho, descreva um problema — ou use o botão **Usar um exemplo**.
-3. Envie e veja a ficha.
+1. Abra a aplicação publicada (link no topo) e clique em **Fazer o diagnóstico** —
+   a página desce até o formulário.
+2. Preencha nome e WhatsApp (pode ser fictício), escolha o aparelho e descreva um
+   problema — ou use o botão **Usar um exemplo**.
+3. Envie e veja a ficha. A resposta leva de 3 a 4 segundos.
 4. Abra **Bancada interna** para ver o caso entrar na fila já classificado.
 
 Para rodar o componente sozinho, sem o Make: abra `bancada-diagnostico.html` no
@@ -150,7 +171,8 @@ make/prompt-triagem.txt         prompt do classificador
 make/contrato-saida.json        formato de saída aceito pelo site
 make/blueprint-bancada.json     blueprint do cenário, pronto para importar
 make/montagem-do-cenario.md     como montar o cenário no Make
-docs/roteiro-video.md           roteiro do vídeo pitch
-docs/parte-teorica.txt          texto da parte teórica
-docs/prints/                    capturas de tela
+docs/parte-teorica-abnt.pdf     parte teórica formatada em ABNT
+docs/parte-teorica.txt          o mesmo texto, sem formatação
+docs/roteiro-video.md           roteiro do vídeo pitch, cena a cena
+docs/prints/                    capturas de tela e relatório do Lighthouse
 ```

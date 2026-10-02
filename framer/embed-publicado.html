@@ -732,7 +732,7 @@
       var limpo = String(t).trim()
         .replace(/^`{3}\s*json/i, "").replace(/^`{3}/, "").replace(/`{3}\s*$/, "").trim();
       try { return JSON.parse(limpo); }
-      catch (e) { throw new Error("A bancada devolveu uma resposta que nao consegui ler."); }
+      catch (e) { throw new Error("A bancada devolveu uma resposta que não consegui ler."); }
     });
   }
 
@@ -843,7 +843,7 @@
     $("#bd-fone").value = "(31) 9 9271-3388";
     $("#ap-celular").checked = true;
     $("#bd-idade").value = "medio";
-    $("#bd-desc").value = "Deixei cair na piscina, tirei rápido e seguei, mas agora ele só esquenta e não liga mais.";
+    $("#bd-desc").value = "Deixei cair na piscina, tirei rápido e sequei, mas agora ele só esquenta e não liga mais.";
     $("#bd-desc").focus();
   });
 
@@ -872,7 +872,7 @@
         };
         rec.onerror = function(ev){
           if (ev.error === "not-allowed" || ev.error === "service-not-allowed"){
-            avisoMic("O microfone está bloqueado aqui. Você pode escrever a descrição normalmente.");
+            avisoMic("O navegador bloqueou o microfone. Libere o acesso no cadeado ao lado do endereço do site ou escreva a descrição normalmente.");
           } else {
             avisoMic("Não consegui captar o áudio. Tente de novo ou escreva a descrição.");
           }
