@@ -39,7 +39,9 @@ A navegação entre as três áreas da aplicação segue o padrão de abas recom
 
 A validação do formulário é própria, usando a API de validação do HTML apenas como base. Quando algo falta, monto uma lista de erros no topo, levo o foco para ela e transformo cada erro num link que leva direto ao campo com problema, marcando o campo com aria-invalid.
 
-O resultado da triagem é renderizado inteiramente em JavaScript a partir de dados, dentro de um contêiner com aria-live, para que quem usa leitor de tela seja avisado quando o diagnóstico chega.
+O resultado da triagem é renderizado inteiramente em JavaScript a partir de dados, dentro de um contêiner com aria-live, para que quem usa leitor de tela seja avisado quando o diagnóstico chega. A Figura 1 mostra essa ficha no site publicado, na largura de um celular, gerada por uma resposta real do cenário: a provável causa, a confiança, a hipótese alternativa, a urgência e os fatos extraídos do relato vêm da IA; a faixa de preço, o prazo e o veredito saem do catálogo da loja, como explico na seção 4.
+
+[Figura 1 – Ficha de diagnóstico no site publicado, em tela de celular. Ficha de diagnóstico na tela do celular: protocolo com selo Urgente, provável causa Limpeza de oxidação com 85% de confiança, hipótese alternativa Reparo de placa, faixa de preço de R$ 220 a R$ 480, prazo de 1 a 2 dias úteis, veredito Compensa consertar e os fatos que o sistema entendeu do relato. Fonte: elaborado pelo autor (2026). A imagem está na versão em PDF.]
 
 Toda a paleta vem de variáveis CSS declaradas na raiz do componente, e não de cores escritas soltas pelas regras. Na versão que roda sozinha no navegador existe também um bloco de tema escuro acionado por prefers-color-scheme. Na versão publicada esse bloco foi retirado de propósito: a página do Framer é só clara, e um cartão escuro dentro de uma página clara pareceria defeito, não recurso.
 
@@ -50,7 +52,9 @@ Duas correções foram feitas por script dentro do próprio Embed, porque o Fram
 
 4 RECURSO DE IA E AUTOMAÇÃO
 
-A automação é um cenário no Make com três módulos: um webhook recebe o formulário, um módulo de IA processa o relato com o modelo Claude Haiku e um módulo de resposta devolve o JSON ao navegador com os cabeçalhos de CORS. Cada diagnóstico leva de três a quatro segundos e consome cerca de seis créditos. A fila interna é montada no próprio navegador a partir desse JSON, sem banco de dados.
+A automação é um cenário no Make com três módulos: um webhook recebe o formulário, um módulo de IA processa o relato com o modelo Claude Haiku e um módulo de resposta devolve o JSON ao navegador com os cabeçalhos de CORS. Cada diagnóstico leva de três a quatro segundos e consome cerca de seis créditos. A fila interna é montada no próprio navegador a partir desse JSON, sem banco de dados. A Figura 2 mostra o cenário ativo, com os três módulos e as últimas execuções concluídas com sucesso.
+
+[Figura 2 – Cenário “Bancada - Triagem” no Make, com o histórico de execuções. Cenário no Make com três módulos ligados em sequência: 1. Formulario do site (webhook), 2. Triagem (IA) e 3. Devolve o JSON ao site; à direita, o histórico com execuções marcadas como Success, de 3 a 4 segundos e cerca de 6,5 créditos cada. Fonte: elaborado pelo autor (2026). A imagem está na versão em PDF.]
 
 A decisão de projeto mais importante do trabalho está aqui, e ela é o oposto do que eu tinha feito antes: a IA não escreve o texto que o cliente lê.
 
@@ -69,7 +73,9 @@ O layout usa flex e grid com gap, unidades relativas e nenhuma largura mínima m
 
 Em acessibilidade: a navegação inteira funciona por teclado com foco visível; as cores vêm de tokens pensados para contraste; o resultado é anunciado por aria-live; os campos têm rótulo associado e o grupo de opções está em fieldset com legend; a urgência é comunicada por texto e forma além da cor, para não depender de percepção cromática; e prefers-reduced-motion desliga as animações.
 
-Auditei o site já publicado com duas ferramentas. Com o axe-core, nas regras da WCAG 2.1 níveis A e AA, nas três larguras, em tema claro e escuro e em três estados da tela — formulário, ficha pronta e painel interno —, o resultado foi zero violação. No Lighthouse, categoria Acessibilidade, a nota foi 98 de 100.
+Auditei o site já publicado com duas ferramentas. Com o axe-core, nas regras da WCAG 2.1 níveis A e AA, nas três larguras, em tema claro e escuro e em três estados da tela — formulário, ficha pronta e painel interno —, o resultado foi zero violação. No Lighthouse, categoria Acessibilidade, a nota foi 98 de 100, como mostra a Figura 3.
+
+[Figura 3 – Relatório do Lighthouse na URL publicada: acessibilidade 98 de 100. Relatório do Lighthouse para blushing-yard-728562.framer.app com nota 98 em acessibilidade e um único item apontado: o documento não tem um landmark main. Fonte: elaborado pelo autor (2026). A imagem está na versão em PDF.]
 
 A auditoria revelou quatro problemas reais que eu não tinha visto a olho nu, todos corrigidos antes da entrega: um tom de cinza do texto auxiliar com contraste de 3,22 para 1, abaixo do mínimo de 4,5 exigido pelo critério 1.4.3 da WCAG; a ausência de lang e de title no documento do Embed; a ausência de nome no iframe gerado pelo Framer; e um estouro horizontal que só existia dentro do iframe.
 
